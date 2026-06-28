@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "musicrag"
+version = "0.1.0"
+description = "MongoDB Atlas hybrid search and RAG over music-industry transcripts."
+requires-python = ">=3.11"
+dependencies = [
+  "pymongo[srv]>=4.7",
+  "certifi>=2024.2.2",
+  "voyageai>=0.3.7",
+  "python-dotenv>=1.0.1",
+  "tiktoken>=0.7.0",
+  "requests>=2.32.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.ruff]
+line-length = 100
+

@@ -1,0 +1,8 @@
+pymongo[srv]>=4.7
+certifi>=2024.2.2
+voyageai>=0.3.7
+python-dotenv>=1.0.1
+tiktoken>=0.7.0
+requests>=2.32.0
+pytest>=8.2.0
+
