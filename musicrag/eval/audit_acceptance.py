@@ -8,7 +8,10 @@ from pathlib import Path
 from typing import Any
 
 from musicrag.config import get_mongo_client, settings
+from musicrag.eval.run_eval import load_golden, validate_golden
 from musicrag.ingest.parse_sources import read_index
+
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 
 @dataclass
@@ -63,6 +66,26 @@ def corpus_check(transcripts_root: Path) -> list[Check]:
         ok("corpus:transcribed", f"{len(transcribed)} episodes with transcripts"),
         ok("corpus:channels", f"{len(channels)} channels"),
     ]
+
+
+def evaluation_check() -> list[Check]:
+    checks: list[Check] = []
+    golden_path = PROJECT_ROOT / "eval/golden.jsonl"
+    report_path = PROJECT_ROOT / "eval/report.md"
+    try:
+        items = load_golden(golden_path)
+        validate_golden(items)
+        channels = {item.get("channel") for item in items if item.get("channel")}
+        checks.append(ok("eval:golden", f"{len(items)} questions across {len(channels)} channels"))
+    except Exception as exc:
+        checks.append(fail("eval:golden", f"{type(exc).__name__}: {exc}"))
+    if report_path.exists():
+        checks.append(ok("eval:report", "eval/report.md exists"))
+    else:
+        checks.append(
+            fail("eval:report", "eval/report.md missing; run python -m musicrag.eval.run_eval")
+        )
+    return checks
 
 
 def search_index_state(collection) -> dict[str, Any]:
@@ -148,7 +171,7 @@ def main() -> None:
     args = parser.parse_args()
 
     cfg = settings()
-    checks = env_check() + corpus_check(cfg.transcripts_root) + db_check()
+    checks = env_check() + corpus_check(cfg.transcripts_root) + evaluation_check() + db_check()
     payload = {"checks": [asdict(check) for check in checks]}
     if args.json:
         print(json.dumps(payload, indent=2))

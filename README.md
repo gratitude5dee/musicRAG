@@ -43,6 +43,16 @@ The pipeline is idempotent. Chunks are keyed by `chunk_uid`, and embeddings are 
 python -m musicrag.query.cli "How do A&R find new artists?"
 ```
 
+## Evaluation
+
+The retrieval eval set lives at `eval/golden.jsonl` and currently contains 34 questions across all 9 channels.
+
+```bash
+python -m musicrag.eval.run_eval
+```
+
+The eval writes `eval/report.md` and `eval/report.json`, compares baseline hybrid search with reranked results, and enforces the goal targets: Recall@10 >= 0.85 and MRR@10 >= 0.60.
+
 ## Acceptance Audit
 
 Run the local/live readiness audit after secrets are configured:
@@ -51,7 +61,7 @@ Run the local/live readiness audit after secrets are configured:
 python -m musicrag.eval.audit_acceptance
 ```
 
-This checks local corpus visibility, required env vars, MongoDB connectivity, collection counts, sample embedding dimensions, and search-index queryability.
+This checks local corpus visibility, eval readiness, required env vars, MongoDB connectivity, collection counts, sample embedding dimensions, and search-index queryability.
 
 See [docs/MONGODB_MCP_SETUP.md](docs/MONGODB_MCP_SETUP.md) for Codex MongoDB MCP configuration.
 
