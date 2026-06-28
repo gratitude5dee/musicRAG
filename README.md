@@ -43,6 +43,18 @@ The pipeline is idempotent. Chunks are keyed by `chunk_uid`, and embeddings are 
 python -m musicrag.query.cli "How do A&R find new artists?"
 ```
 
+## Acceptance Audit
+
+Run the local/live readiness audit after secrets are configured:
+
+```bash
+python -m musicrag.eval.audit_acceptance
+```
+
+This checks local corpus visibility, required env vars, MongoDB connectivity, collection counts, sample embedding dimensions, and search-index queryability.
+
+See [docs/MONGODB_MCP_SETUP.md](docs/MONGODB_MCP_SETUP.md) for Codex MongoDB MCP configuration.
+
 ## Web
 
 ```bash
@@ -61,4 +73,3 @@ The intended public repository is `gratitude5dee/musicRAG`. If `gh auth status` 
 gh auth login -h github.com
 gh repo create gratitude5dee/musicRAG --public --source . --remote origin --push
 ```
-
