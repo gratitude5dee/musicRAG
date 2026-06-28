@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { gatewayChatStream } from '@/lib/gateway'
+import { gatewayTextStream } from '@/lib/gateway'
 import { retrieve, toSource } from '@/lib/retrieval'
 import { rerank } from '@/lib/voyage'
 import type { Filters } from '@/lib/types'
@@ -24,37 +24,15 @@ export async function POST(req: Request) {
     const retrieved = await retrieve(question, body.filters)
     const reranked = await rerank(question, retrieved, 8)
     const sources = reranked.map(toSource)
-    const gateway = await gatewayChatStream(question, sources)
-    if (!gateway.ok || !gateway.body) {
-      const detail = await gateway.text().catch(() => '')
-      return NextResponse.json({ error: `AI Gateway failed: ${gateway.status}`, detail }, { status: 502 })
-    }
+    const textStream = gatewayTextStream(question, sources)
 
     const stream = new ReadableStream<Uint8Array>({
       async start(controller) {
         controller.enqueue(sse('sources', sources))
-        const reader = gateway.body!.getReader()
-        const decoder = new TextDecoder()
-        let buffer = ''
         try {
-          while (true) {
-            const { done, value } = await reader.read()
-            if (done) break
-            buffer += decoder.decode(value, { stream: true })
-            const lines = buffer.split('\n')
-            buffer = lines.pop() ?? ''
-            for (const line of lines) {
-              const trimmed = line.trim()
-              if (!trimmed.startsWith('data:')) continue
-              const raw = trimmed.slice(5).trim()
-              if (!raw || raw === '[DONE]') continue
-              try {
-                const payload = JSON.parse(raw)
-                const token = payload.choices?.[0]?.delta?.content ?? ''
-                if (token) controller.enqueue(sse('token', { token }))
-              } catch {
-                // Ignore keep-alive or provider-specific non-JSON fragments.
-              }
+          for await (const token of textStream) {
+            if (token) {
+              controller.enqueue(sse('token', { token }))
             }
           }
           controller.enqueue(sse('done', {}))
@@ -80,4 +58,3 @@ export async function POST(req: Request) {
     )
   }
 }
-
