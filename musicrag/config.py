@@ -78,7 +78,7 @@ class Settings:
             embed_fallback_model=os.getenv("EMBED_FALLBACK_MODEL", "voyage-4-large"),
             embed_dims=int(os.getenv("EMBED_DIMS", "1024")),
             rerank_model=os.getenv("RERANK_MODEL", "rerank-2.5"),
-            ai_gateway_api_key=os.getenv("AI_GATEWAY_API_KEY", ""),
+            ai_gateway_api_key=os.getenv("AI_GATEWAY_API_KEY") or os.getenv("VERCEL_OIDC_TOKEN", ""),
             generation_model=os.getenv("GENERATION_MODEL", "google/gemini-3.5-flash"),
             chunk_tokens=int(os.getenv("CHUNK_TOKENS", "500")),
             chunk_overlap=int(os.getenv("CHUNK_OVERLAP", "75")),

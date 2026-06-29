@@ -13,6 +13,19 @@ function sse(event: string, data: unknown) {
   return encoder.encode(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`)
 }
 
+function publicError(error: unknown) {
+  const message = error instanceof Error ? error.message : 'chat failed'
+  if (
+    /MongoServerSelectionError|ETIMEDOUT|ECONNREFUSED|ENETUNREACH|27017/.test(message)
+  ) {
+    return 'MongoDB Atlas connection timed out from Vercel. Allow Vercel egress in Atlas Network Access, or enable Vercel Secure Compute/static egress and allow that address.'
+  }
+  if (/AI Gateway|AI_GATEWAY_API_KEY|VERCEL_OIDC_TOKEN|Unauthorized|401|model/i.test(message)) {
+    return `Vercel AI Gateway error: ${message}`
+  }
+  return message
+}
+
 export async function POST(req: Request) {
   try {
     const body = (await req.json()) as { question?: string; filters?: Filters }
@@ -39,7 +52,6 @@ export async function POST(req: Request) {
         )
         controller.enqueue(sse('sources', sources))
         try {
-          // Created here so a missing AI_GATEWAY_API_KEY still streams meta + sources.
           const textStream = gatewayTextStream(question, sources)
           for await (const token of textStream) {
             if (token) {
@@ -50,7 +62,7 @@ export async function POST(req: Request) {
           controller.close()
         } catch (error) {
           controller.enqueue(
-            sse('error', { message: error instanceof Error ? error.message : 'stream failed' })
+            sse('error', { message: publicError(error) })
           )
           controller.close()
         }
@@ -66,7 +78,7 @@ export async function POST(req: Request) {
     })
   } catch (error) {
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'chat failed' },
+      { error: publicError(error) },
       { status: 500 }
     )
   }

@@ -1,5 +1,5 @@
 import type { Source } from './types'
-import { createGateway, streamText } from 'ai'
+import { streamText } from 'ai'
 
 export function secondsToMmss(seconds?: number | null) {
   if (seconds === null || seconds === undefined) return 'no timestamp'
@@ -23,12 +23,8 @@ export function buildPrompt(question: string, sources: Source[]) {
 }
 
 export function gatewayTextStream(question: string, sources: Source[]) {
-  if (!process.env.AI_GATEWAY_API_KEY) {
-    throw new Error('AI_GATEWAY_API_KEY is required')
-  }
-  const gateway = createGateway({ apiKey: process.env.AI_GATEWAY_API_KEY })
   const result = streamText({
-    model: gateway(process.env.GENERATION_MODEL ?? 'google/gemini-3.5-flash'),
+    model: process.env.GENERATION_MODEL ?? 'google/gemini-3.5-flash',
     temperature: 0.2,
     system:
       'You answer questions about the music industry using ONLY the provided transcript excerpts. Cite every factual claim inline as [Title @ mm:ss](deep_link). If the excerpts do not contain the answer, say so. Never invent quotes, names, numbers, or sources.',

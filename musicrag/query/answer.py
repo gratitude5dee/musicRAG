@@ -56,7 +56,7 @@ def build_context(docs: list[dict[str, Any]]) -> str:
 def generate_answer(query: str, docs: list[dict[str, Any]], cfg: Settings | None = None) -> dict[str, Any]:
     cfg = cfg or settings()
     if not cfg.ai_gateway_api_key:
-        raise RuntimeError("AI_GATEWAY_API_KEY is required for answer generation.")
+        raise RuntimeError("AI_GATEWAY_API_KEY or VERCEL_OIDC_TOKEN is required for answer generation.")
     messages = [
         {"role": "system", "content": SYSTEM_PROMPT},
         {
@@ -85,4 +85,3 @@ def generate_answer(query: str, docs: list[dict[str, Any]], cfg: Settings | None
 
 def to_json(result: dict[str, Any]) -> str:
     return json.dumps(result, ensure_ascii=False, indent=2)
-

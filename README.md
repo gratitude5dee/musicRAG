@@ -25,7 +25,9 @@ pip install -r requirements.txt
 cp .env.example .env
 ```
 
-Fill `.env` with `VOYAGE_API_KEY` and `AI_GATEWAY_API_KEY`, plus either `MONGODB_URI` or the split MongoDB values: `MONGODB_HOST`, `MONGODB_USERNAME`, `MONGODB_PASSWORD`, and `MONGODB_OPTIONS`.
+Fill `.env` with `VOYAGE_API_KEY`, plus either `MONGODB_URI` or the split MongoDB values: `MONGODB_HOST`, `MONGODB_USERNAME`, `MONGODB_PASSWORD`, and `MONGODB_OPTIONS`.
+
+For local answer generation through Vercel AI Gateway, use either `AI_GATEWAY_API_KEY` or a short-lived `VERCEL_OIDC_TOKEN` from `vercel env pull`. On Vercel deployments, prefer project OIDC and avoid setting a stale `AI_GATEWAY_API_KEY`, because static keys take precedence when present.
 
 ## Ingestion
 
@@ -79,9 +81,11 @@ The web app reads from `music_rag.chunks`, `music_rag.channels`, and `music_rag.
 
 The Vercel project is linked from `web/` and deployed at `https://web-iota-neon-52.vercel.app`.
 
-Required production env vars are `MONGODB_HOST`, `MONGODB_USERNAME`, `MONGODB_PASSWORD`, `MONGODB_DB`, `MONGODB_OPTIONS`, `VOYAGE_API_KEY`, `AI_GATEWAY_API_KEY`, and `GENERATION_MODEL`.
+Required production env vars are `MONGODB_HOST`, `MONGODB_USERNAME`, `MONGODB_PASSWORD`, `MONGODB_DB`, `MONGODB_OPTIONS`, `VOYAGE_API_KEY`, and `GENERATION_MODEL`.
 
-Dynamic API routes also require MongoDB Atlas Network Access for Vercel egress. Use Vercel Secure Compute or another controlled egress option for production, then allow that egress in Atlas. A temporary broad Atlas allow-list can unblock testing, but should not be treated as the production posture.
+AI Gateway generation uses the AI SDK with a plain `provider/model` string, so Vercel project OIDC can authenticate it automatically after AI Gateway is enabled for the project. `AI_GATEWAY_API_KEY` is optional for static-key deployments and local/CI runs; remove it if the key is stale or unauthorized.
+
+Dynamic API routes also require MongoDB Atlas Network Access for Vercel egress. A `connect ETIMEDOUT ...:27017` error means retrieval cannot reach Atlas yet; it happens before Gemini generation. Use Vercel Secure Compute or another controlled egress option for production, then allow that egress in Atlas. A temporary broad Atlas allow-list can unblock testing, but should not be treated as the production posture.
 
 ## GitHub
 
