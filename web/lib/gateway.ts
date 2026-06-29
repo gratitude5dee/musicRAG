@@ -22,7 +22,7 @@ export function buildPrompt(question: string, sources: Source[]) {
   return `Question: ${question}\n\nTranscript excerpts:\n${context}\n\nAnswer with concise synthesis and inline citations.`
 }
 
-export function gatewayTextStream(question: string, sources: Source[]) {
+export function gatewayFullStream(question: string, sources: Source[]) {
   const result = streamText({
     model: process.env.GENERATION_MODEL ?? 'google/gemini-3.5-flash',
     temperature: 0.2,
@@ -30,5 +30,5 @@ export function gatewayTextStream(question: string, sources: Source[]) {
       'You answer questions about the music industry using ONLY the provided transcript excerpts. Cite every factual claim inline as [Title @ mm:ss](deep_link). If the excerpts do not contain the answer, say so. Never invent quotes, names, numbers, or sources.',
     prompt: buildPrompt(question, sources)
   })
-  return result.textStream
+  return result.fullStream
 }
