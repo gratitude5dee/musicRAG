@@ -99,6 +99,14 @@ def search_index_state(collection) -> dict[str, Any]:
         return {"_error": str(exc)}
 
 
+def expected_catalog_counts(transcripts_root: Path) -> tuple[int | None, int | None]:
+    try:
+        rows = read_index(transcripts_root)
+    except Exception:
+        return None, None
+    return len(rows), len({row.channel for row in rows})
+
+
 def db_check() -> list[Check]:
     cfg = settings()
     if not cfg.mongodb_uri:
@@ -119,14 +127,21 @@ def db_check() -> list[Check]:
     missing_embedding = db.chunks.count_documents(
         {"$or": [{"embedding": {"$exists": False}}, {"embedding": None}]}
     )
+    expected_episodes, expected_channels = expected_catalog_counts(cfg.transcripts_root)
     checks.extend(
         [
             ok("db:episodes", f"{episode_count} episode docs")
-            if episode_count == 1087
-            else fail("db:episodes", f"{episode_count} episode docs; expected 1087"),
+            if expected_episodes is None or episode_count == expected_episodes
+            else fail(
+                "db:episodes",
+                f"{episode_count} episode docs; expected {expected_episodes} from transcript index",
+            ),
             ok("db:channels", f"{channel_count} channel docs")
-            if channel_count == 9
-            else fail("db:channels", f"{channel_count} channel docs; expected 9"),
+            if expected_channels is None or channel_count == expected_channels
+            else fail(
+                "db:channels",
+                f"{channel_count} channel docs; expected {expected_channels} from transcript index",
+            ),
             ok("db:chunks", f"{chunks_count} chunk docs")
             if chunks_count
             else fail("db:chunks", "no chunks found"),

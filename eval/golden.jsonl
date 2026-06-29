@@ -32,3 +32,9 @@
 {"q":"What does Bob Pittman discuss with Rick Rubin on Tetragrammaton?","expected_video_ids":["DJy1RF3Sa2M"],"channel":"Rick Rubin - Tetragrammaton","notes":"Media and music executive probe."}
 {"q":"What does Bernard MacMahon discuss with Rick Rubin on Tetragrammaton?","expected_video_ids":["Te50Pm9oQsY"],"channel":"Rick Rubin - Tetragrammaton","notes":"Music documentary/culture probe."}
 {"q":"What does Adam D'Angelo discuss with Rick Rubin on Tetragrammaton?","expected_video_ids":["Zsij0ZJZnYo"],"channel":"Rick Rubin - Tetragrammaton","notes":"AI and creative technology probe."}
+{"q":"What A&R advice does MUBUTV share for breaking into the music business?","expected_video_ids":["UZnF1GqKwKU"],"channel":"MUBUTV","notes":"New-channel A&R title-anchored probe."}
+{"q":"What does Don Passman explain about the music business on MUBUTV?","expected_video_ids":["FG8VfGfoqgY","ctdNoYxuxXQ"],"channel":"MUBUTV","notes":"New-channel music business/legal probe."}
+{"q":"What viral musician habits does Musformation identify for 2024?","expected_video_ids":["vqVc5VAB5Q8"],"channel":"Musformation","notes":"New-channel viral music marketing probe."}
+{"q":"What TikTok mistakes hold musicians back according to Musformation?","expected_video_ids":["PyJY-LzPQ0U"],"channel":"Musformation","notes":"New-channel TikTok promotion probe."}
+{"q":"What does Jon B say on R&B Money about staying true to your identity and not chasing trends?","expected_video_ids":["8xt7qRfDdzU"],"channel":"RnB Money Podcast","notes":"New-channel R&B longevity probe."}
+{"q":"How does Kenny Lattimore describe staying relevant and growing with the music industry on R&B Money?","expected_video_ids":["VEdX9D_ZFTY"],"channel":"RnB Money Podcast","notes":"New-channel R&B legacy artist probe."}

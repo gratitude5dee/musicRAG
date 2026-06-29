@@ -1,12 +1,12 @@
 # MusicRAG Eval Report
 
-- Questions: 34
-- Baseline Recall@10: 0.882
-- Baseline MRR@10: 0.868
-- Baseline nDCG@10: 0.871
-- Reranked Recall@10: 0.912
-- Reranked MRR@10: 0.730
-- Reranked nDCG@10: 0.775
+- Questions: 40
+- Baseline Recall@10: 0.887
+- Baseline MRR@10: 0.863
+- Baseline nDCG@10: 0.863
+- Reranked Recall@10: 0.925
+- Reranked MRR@10: 0.950
+- Reranked nDCG@10: 0.931
 
 ```json
 [
@@ -112,13 +112,13 @@
     "top_video_ids": [
       "u0w55knNF48",
       "u0w55knNF48",
-      "_M6hpkFz4KM",
-      "_M6hpkFz4KM",
       "u0w55knNF48",
       "u0w55knNF48",
       "u0w55knNF48",
-      "_M6hpkFz4KM",
-      "KIYLFqTweYs",
+      "u0w55knNF48",
+      "u0w55knNF48",
+      "u0w55knNF48",
+      "u0w55knNF48",
       "u0w55knNF48"
     ]
   },
@@ -218,18 +218,18 @@
     },
     "reranked": {
       "recall10": 1.0,
-      "mrr10": 0.5,
-      "ndcg10": 0.6309297535714575
+      "mrr10": 1.0,
+      "ndcg10": 1.0
     },
     "top_video_ids": [
-      "UKzdUG-SobU",
       "ZW7LGkVaeQ8",
       "ZW7LGkVaeQ8",
-      "Xrjlwlm6NaU",
       "ZW7LGkVaeQ8",
-      "Xrjlwlm6NaU",
       "ZW7LGkVaeQ8",
-      "Xrjlwlm6NaU",
+      "ZW7LGkVaeQ8",
+      "ZW7LGkVaeQ8",
+      "ZW7LGkVaeQ8",
+      "ZW7LGkVaeQ8",
       "ZW7LGkVaeQ8",
       "ZW7LGkVaeQ8"
     ]
@@ -251,15 +251,15 @@
     },
     "top_video_ids": [
       "FECbhcHxpEc",
-      "F-apvvzQZpI",
-      "F-apvvzQZpI",
-      "Xrjlwlm6NaU",
       "FECbhcHxpEc",
       "FECbhcHxpEc",
-      "QLw_wuhtRXQ",
-      "QLw_wuhtRXQ",
       "FECbhcHxpEc",
-      "F-apvvzQZpI"
+      "FECbhcHxpEc",
+      "FECbhcHxpEc",
+      "FECbhcHxpEc",
+      "FECbhcHxpEc",
+      "FECbhcHxpEc",
+      "FECbhcHxpEc"
     ]
   },
   {
@@ -274,19 +274,19 @@
     },
     "reranked": {
       "recall10": 1.0,
-      "mrr10": 0.5,
-      "ndcg10": 0.6309297535714575
+      "mrr10": 1.0,
+      "ndcg10": 1.0
     },
     "top_video_ids": [
-      "v7JJuokH1mw",
-      "jw9NyUJ4Ly0",
-      "3qqn71O4U8A",
       "jw9NyUJ4Ly0",
       "jw9NyUJ4Ly0",
       "jw9NyUJ4Ly0",
-      "3qqn71O4U8A",
-      "3qqn71O4U8A",
-      "F-apvvzQZpI",
+      "jw9NyUJ4Ly0",
+      "jw9NyUJ4Ly0",
+      "jw9NyUJ4Ly0",
+      "jw9NyUJ4Ly0",
+      "jw9NyUJ4Ly0",
+      "jw9NyUJ4Ly0",
       "jw9NyUJ4Ly0"
     ]
   },
@@ -297,8 +297,8 @@
     ],
     "baseline": {
       "recall10": 1.0,
-      "mrr10": 1.0,
-      "ndcg10": 1.0
+      "mrr10": 0.5,
+      "ndcg10": 0.6309297535714575
     },
     "reranked": {
       "recall10": 1.0,
@@ -307,15 +307,15 @@
     },
     "top_video_ids": [
       "ondTlbp6ZEM",
-      "_Nnb7y1mnCc",
-      "J3FEeFI_7_Q",
-      "_Nnb7y1mnCc",
-      "_Nnb7y1mnCc",
-      "_Nnb7y1mnCc",
       "ondTlbp6ZEM",
-      "J3FEeFI_7_Q",
       "ondTlbp6ZEM",
-      "_Nnb7y1mnCc"
+      "ondTlbp6ZEM",
+      "ondTlbp6ZEM",
+      "ondTlbp6ZEM",
+      "ondTlbp6ZEM",
+      "ondTlbp6ZEM",
+      "ondTlbp6ZEM",
+      "ondTlbp6ZEM"
     ]
   },
   {
@@ -336,10 +336,10 @@
     "top_video_ids": [
       "OTGheE1muVI",
       "OTGheE1muVI",
-      "XEbZzg36r5I",
       "OTGheE1muVI",
       "OTGheE1muVI",
-      "rUln84XA3ts",
+      "OTGheE1muVI",
+      "OTGheE1muVI",
       "OTGheE1muVI",
       "OTGheE1muVI",
       "OTGheE1muVI",
@@ -391,13 +391,13 @@
     },
     "top_video_ids": [
       "WDHjf-sCKBk",
-      "dysHF-iAnNU",
-      "dysHF-iAnNU",
-      "WDHjf-sCKBk",
-      "dysHF-iAnNU",
       "WDHjf-sCKBk",
       "WDHjf-sCKBk",
-      "dysHF-iAnNU",
+      "WDHjf-sCKBk",
+      "WDHjf-sCKBk",
+      "WDHjf-sCKBk",
+      "WDHjf-sCKBk",
+      "WDHjf-sCKBk",
       "WDHjf-sCKBk",
       "WDHjf-sCKBk"
     ]
@@ -424,9 +424,9 @@
       "twydXIVqB7U",
       "twydXIVqB7U",
       "twydXIVqB7U",
-      "4kLaUKv6PdM",
-      "4kLaUKv6PdM",
-      "4kLaUKv6PdM",
+      "twydXIVqB7U",
+      "twydXIVqB7U",
+      "twydXIVqB7U",
       "twydXIVqB7U"
     ]
   },
@@ -442,20 +442,20 @@
     },
     "reranked": {
       "recall10": 1.0,
-      "mrr10": 0.5,
-      "ndcg10": 0.6309297535714575
+      "mrr10": 1.0,
+      "ndcg10": 1.0
     },
     "top_video_ids": [
-      "Z34PoSfPt8g",
+      "YLhCEHeBDrg",
+      "YLhCEHeBDrg",
+      "YLhCEHeBDrg",
+      "YLhCEHeBDrg",
+      "YLhCEHeBDrg",
+      "YLhCEHeBDrg",
+      "YLhCEHeBDrg",
       "YLhCEHeBDrg",
       "Z34PoSfPt8g",
-      "Z34PoSfPt8g",
-      "xr-iVW2FX94",
-      "YLhCEHeBDrg",
-      "rRBL8iX-dnc",
-      "YLhCEHeBDrg",
-      "Z34PoSfPt8g",
-      "8l-yHa4hEI4"
+      "Z34PoSfPt8g"
     ]
   },
   {
@@ -470,20 +470,20 @@
     },
     "reranked": {
       "recall10": 1.0,
-      "mrr10": 0.125,
-      "ndcg10": 0.31546487678572877
+      "mrr10": 1.0,
+      "ndcg10": 1.0
     },
     "top_video_ids": [
-      "JEZ_CWqbnuw",
-      "hG6KhjGd3LQ",
-      "Z34PoSfPt8g",
-      "984bRX7b2lI",
-      "q-0rzUxHDVQ",
-      "S_X1jw2VMgA",
-      "RIQM_npGJ_c",
       "eDFUpI_5u3E",
-      "q-0rzUxHDVQ",
-      "S_X1jw2VMgA"
+      "eDFUpI_5u3E",
+      "eDFUpI_5u3E",
+      "eDFUpI_5u3E",
+      "eDFUpI_5u3E",
+      "eDFUpI_5u3E",
+      "eDFUpI_5u3E",
+      "eDFUpI_5u3E",
+      "eDFUpI_5u3E",
+      "eDFUpI_5u3E"
     ]
   },
   {
@@ -503,15 +503,15 @@
     },
     "top_video_ids": [
       "Z-bvSw8vJMY",
-      "TYz9CQDnZjU",
-      "TYz9CQDnZjU",
-      "TYz9CQDnZjU",
       "Z-bvSw8vJMY",
       "Z-bvSw8vJMY",
-      "zsXFmX4bCwM",
-      "TYz9CQDnZjU",
-      "Xtd2g_j4--c",
-      "BnxQct10bnM"
+      "Z-bvSw8vJMY",
+      "Z-bvSw8vJMY",
+      "Z-bvSw8vJMY",
+      "Z-bvSw8vJMY",
+      "Z-bvSw8vJMY",
+      "Z-bvSw8vJMY",
+      "TYz9CQDnZjU"
     ]
   },
   {
@@ -526,21 +526,21 @@
       "ndcg10": 0.0
     },
     "reranked": {
-      "recall10": 0.0,
-      "mrr10": 0.0,
-      "ndcg10": 0.0
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.6131471927654584
     },
     "top_video_ids": [
-      "_W42GWubTH4",
+      "f-p6gfC0T_U",
+      "f-p6gfC0T_U",
+      "f-p6gfC0T_U",
+      "f-p6gfC0T_U",
+      "f-p6gfC0T_U",
+      "f-p6gfC0T_U",
+      "f-p6gfC0T_U",
       "Oy5I4ihOuYU",
       "Oy5I4ihOuYU",
-      "Oy5I4ihOuYU",
-      "mtfXpNwV7uM",
-      "_W42GWubTH4",
-      "Oy5I4ihOuYU",
-      "_W42GWubTH4",
-      "mtxY6clhgZQ",
-      "_W42GWubTH4"
+      "Oy5I4ihOuYU"
     ]
   },
   {
@@ -564,11 +564,11 @@
       "mMnTM4a0NWY",
       "mMnTM4a0NWY",
       "mMnTM4a0NWY",
-      "PmC0QCErvr4",
-      "TQY1W-igH_w",
+      "mMnTM4a0NWY",
+      "mMnTM4a0NWY",
+      "mMnTM4a0NWY",
       "XHLjcyCsDH0",
-      "9oHC37OXAKs",
-      "PmC0QCErvr4"
+      "XHLjcyCsDH0"
     ]
   },
   {
@@ -578,25 +578,25 @@
     ],
     "baseline": {
       "recall10": 1.0,
-      "mrr10": 1.0,
-      "ndcg10": 1.0
+      "mrr10": 0.5,
+      "ndcg10": 0.6309297535714575
     },
     "reranked": {
       "recall10": 1.0,
-      "mrr10": 0.2,
-      "ndcg10": 0.38685280723454163
+      "mrr10": 1.0,
+      "ndcg10": 1.0
     },
     "top_video_ids": [
-      "frUWR3K0Bhw",
-      "XHLjcyCsDH0",
-      "hxkshWbz184",
-      "tI51p2kSktQ",
       "pMarIH7R8to",
-      "7Bvkoe21n98",
-      "skG2gKWpcyo",
       "pMarIH7R8to",
-      "tI51p2kSktQ",
-      "hxkshWbz184"
+      "pMarIH7R8to",
+      "pMarIH7R8to",
+      "pMarIH7R8to",
+      "pMarIH7R8to",
+      "pMarIH7R8to",
+      "pMarIH7R8to",
+      "pMarIH7R8to",
+      "pMarIH7R8to"
     ]
   },
   {
@@ -616,15 +616,15 @@
     },
     "top_video_ids": [
       "lRk41xMHaf0",
-      "kqvtIPC21xM",
       "lRk41xMHaf0",
       "lRk41xMHaf0",
       "lRk41xMHaf0",
-      "kqvtIPC21xM",
       "lRk41xMHaf0",
-      "kqvtIPC21xM",
-      "kqvtIPC21xM",
-      "kqvtIPC21xM"
+      "lRk41xMHaf0",
+      "lRk41xMHaf0",
+      "lRk41xMHaf0",
+      "lRk41xMHaf0",
+      "lRk41xMHaf0"
     ]
   },
   {
@@ -639,20 +639,20 @@
     },
     "reranked": {
       "recall10": 1.0,
-      "mrr10": 0.3333333333333333,
-      "ndcg10": 0.5
+      "mrr10": 1.0,
+      "ndcg10": 1.0
     },
     "top_video_ids": [
-      "XHLjcyCsDH0",
-      "XHLjcyCsDH0",
       "7Bvkoe21n98",
-      "GgucGGRHWi4",
-      "XHLjcyCsDH0",
-      "XHLjcyCsDH0",
-      "XHLjcyCsDH0",
       "7Bvkoe21n98",
-      "TQY1W-igH_w",
-      "hxkshWbz184"
+      "7Bvkoe21n98",
+      "7Bvkoe21n98",
+      "7Bvkoe21n98",
+      "7Bvkoe21n98",
+      "7Bvkoe21n98",
+      "7Bvkoe21n98",
+      "7Bvkoe21n98",
+      "7Bvkoe21n98"
     ]
   },
   {
@@ -666,21 +666,21 @@
       "ndcg10": 1.0
     },
     "reranked": {
-      "recall10": 1.0,
-      "mrr10": 0.5,
-      "ndcg10": 0.6309297535714575
+      "recall10": 0.0,
+      "mrr10": 0.0,
+      "ndcg10": 0.0
     },
     "top_video_ids": [
       "Fp2U1A7wA64",
-      "R1GdwYw0pSw",
-      "Fp2U1A7wA64",
-      "IV6jc3Eb37Q",
-      "Fp2U1A7wA64",
-      "R1GdwYw0pSw",
-      "IV6jc3Eb37Q",
       "Fp2U1A7wA64",
       "Fp2U1A7wA64",
-      "FWo7AMFPQA8"
+      "Fp2U1A7wA64",
+      "Fp2U1A7wA64",
+      "Fp2U1A7wA64",
+      "Fp2U1A7wA64",
+      "Fp2U1A7wA64",
+      "Fp2U1A7wA64",
+      "Fp2U1A7wA64"
     ]
   },
   {
@@ -701,14 +701,14 @@
     "top_video_ids": [
       "eN3d16rloeM",
       "eN3d16rloeM",
-      "2YHBBhdkhbc",
       "eN3d16rloeM",
       "eN3d16rloeM",
       "eN3d16rloeM",
       "eN3d16rloeM",
       "eN3d16rloeM",
       "eN3d16rloeM",
-      "2YHBBhdkhbc"
+      "eN3d16rloeM",
+      "eN3d16rloeM"
     ]
   },
   {
@@ -723,20 +723,20 @@
     },
     "reranked": {
       "recall10": 1.0,
-      "mrr10": 0.3333333333333333,
-      "ndcg10": 0.5
+      "mrr10": 1.0,
+      "ndcg10": 1.0
     },
     "top_video_ids": [
-      "TXXyzfBtcTk",
-      "TXXyzfBtcTk",
+      "FTs0TmRLVjA",
       "FTs0TmRLVjA",
       "1mSLj1BNb_Y",
       "1mSLj1BNb_Y",
-      "HCrJB0M5W5U",
-      "4B0u02C5KD4",
-      "HCrJB0M5W5U",
       "1mSLj1BNb_Y",
-      "HCrJB0M5W5U"
+      "1mSLj1BNb_Y",
+      "1mSLj1BNb_Y",
+      "1mSLj1BNb_Y",
+      "1mSLj1BNb_Y",
+      "1mSLj1BNb_Y"
     ]
   },
   {
@@ -763,8 +763,8 @@
       "NyWPUg_3F6w",
       "NyWPUg_3F6w",
       "NyWPUg_3F6w",
-      "icV9rEWhEhY",
-      "icV9rEWhEhY"
+      "NyWPUg_3F6w",
+      "NyWPUg_3F6w"
     ]
   },
   {
@@ -779,20 +779,20 @@
     },
     "reranked": {
       "recall10": 1.0,
-      "mrr10": 0.3333333333333333,
-      "ndcg10": 0.5
+      "mrr10": 1.0,
+      "ndcg10": 1.0
     },
     "top_video_ids": [
-      "p6HPDjbiOCA",
-      "p6HPDjbiOCA",
       "zDigxcOSUJE",
       "zDigxcOSUJE",
-      "p6HPDjbiOCA",
-      "p6HPDjbiOCA",
       "zDigxcOSUJE",
       "zDigxcOSUJE",
-      "UPE0BooT154",
-      "zTI_VhkHmAU"
+      "zDigxcOSUJE",
+      "zDigxcOSUJE",
+      "zDigxcOSUJE",
+      "zDigxcOSUJE",
+      "zDigxcOSUJE",
+      "zDigxcOSUJE"
     ]
   },
   {
@@ -891,17 +891,17 @@
     },
     "reranked": {
       "recall10": 1.0,
-      "mrr10": 0.5,
-      "ndcg10": 0.6309297535714575
+      "mrr10": 1.0,
+      "ndcg10": 1.0
     },
     "top_video_ids": [
-      "sxKcpatraxY",
-      "DJy1RF3Sa2M",
-      "sxKcpatraxY",
-      "sxKcpatraxY",
       "DJy1RF3Sa2M",
       "DJy1RF3Sa2M",
-      "sxKcpatraxY",
+      "DJy1RF3Sa2M",
+      "DJy1RF3Sa2M",
+      "DJy1RF3Sa2M",
+      "DJy1RF3Sa2M",
+      "DJy1RF3Sa2M",
       "DJy1RF3Sa2M",
       "DJy1RF3Sa2M",
       "DJy1RF3Sa2M"
@@ -918,21 +918,21 @@
       "ndcg10": 0.0
     },
     "reranked": {
-      "recall10": 0.0,
-      "mrr10": 0.0,
-      "ndcg10": 0.0
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0
     },
     "top_video_ids": [
-      "dhhVs05qidI",
-      "Ha6TOLggCXg",
-      "OfGODeJbkwk",
-      "sxKcpatraxY",
-      "ziveHpKQZZY",
-      "rG-IWfD3qhU",
-      "B7ejTU1k1mE",
-      "ziveHpKQZZY",
-      "sxKcpatraxY",
-      "sxKcpatraxY"
+      "Te50Pm9oQsY",
+      "Te50Pm9oQsY",
+      "Te50Pm9oQsY",
+      "Te50Pm9oQsY",
+      "Te50Pm9oQsY",
+      "Te50Pm9oQsY",
+      "Te50Pm9oQsY",
+      "Te50Pm9oQsY",
+      "Te50Pm9oQsY",
+      "Te50Pm9oQsY"
     ]
   },
   {
@@ -951,16 +951,185 @@
       "ndcg10": 0.0
     },
     "top_video_ids": [
-      "dhhVs05qidI",
-      "sxKcpatraxY",
-      "OfGODeJbkwk",
-      "Ha6TOLggCXg",
-      "rG-IWfD3qhU",
       "RAHsF4A8GLM",
       "RAHsF4A8GLM",
-      "ziveHpKQZZY",
-      "sxKcpatraxY",
-      "sxKcpatraxY"
+      "RAHsF4A8GLM",
+      "RAHsF4A8GLM",
+      "RAHsF4A8GLM",
+      "RAHsF4A8GLM",
+      "RAHsF4A8GLM",
+      "RAHsF4A8GLM",
+      "RAHsF4A8GLM",
+      "RAHsF4A8GLM"
+    ]
+  },
+  {
+    "q": "What A&R advice does MUBUTV share for breaking into the music business?",
+    "expected_video_ids": [
+      "UZnF1GqKwKU"
+    ],
+    "baseline": {
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0
+    },
+    "reranked": {
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0
+    },
+    "top_video_ids": [
+      "UZnF1GqKwKU",
+      "UZnF1GqKwKU",
+      "UZnF1GqKwKU",
+      "UZnF1GqKwKU",
+      "UZnF1GqKwKU",
+      "UZnF1GqKwKU",
+      "UZnF1GqKwKU",
+      "UZnF1GqKwKU",
+      "UZnF1GqKwKU",
+      "UZnF1GqKwKU"
+    ]
+  },
+  {
+    "q": "What does Don Passman explain about the music business on MUBUTV?",
+    "expected_video_ids": [
+      "FG8VfGfoqgY",
+      "ctdNoYxuxXQ"
+    ],
+    "baseline": {
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.6131471927654584
+    },
+    "reranked": {
+      "recall10": 0.5,
+      "mrr10": 1.0,
+      "ndcg10": 0.6131471927654584
+    },
+    "top_video_ids": [
+      "ctdNoYxuxXQ",
+      "ctdNoYxuxXQ",
+      "ctdNoYxuxXQ",
+      "ctdNoYxuxXQ",
+      "ctdNoYxuxXQ",
+      "ctdNoYxuxXQ",
+      "ctdNoYxuxXQ",
+      "ctdNoYxuxXQ",
+      "ctdNoYxuxXQ",
+      "ctdNoYxuxXQ"
+    ]
+  },
+  {
+    "q": "What viral musician habits does Musformation identify for 2024?",
+    "expected_video_ids": [
+      "vqVc5VAB5Q8"
+    ],
+    "baseline": {
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0
+    },
+    "reranked": {
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0
+    },
+    "top_video_ids": [
+      "vqVc5VAB5Q8",
+      "vqVc5VAB5Q8",
+      "vqVc5VAB5Q8",
+      "vqVc5VAB5Q8",
+      "vqVc5VAB5Q8",
+      "vqVc5VAB5Q8",
+      "vqVc5VAB5Q8",
+      "mIng3bkHGc8",
+      "mIng3bkHGc8",
+      "mIng3bkHGc8"
+    ]
+  },
+  {
+    "q": "What TikTok mistakes hold musicians back according to Musformation?",
+    "expected_video_ids": [
+      "PyJY-LzPQ0U"
+    ],
+    "baseline": {
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0
+    },
+    "reranked": {
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0
+    },
+    "top_video_ids": [
+      "PyJY-LzPQ0U",
+      "PyJY-LzPQ0U",
+      "PyJY-LzPQ0U",
+      "PyJY-LzPQ0U",
+      "PyJY-LzPQ0U",
+      "PyJY-LzPQ0U",
+      "PyJY-LzPQ0U",
+      "PyJY-LzPQ0U",
+      "PyJY-LzPQ0U",
+      "PyJY-LzPQ0U"
+    ]
+  },
+  {
+    "q": "What does Jon B say on R&B Money about staying true to your identity and not chasing trends?",
+    "expected_video_ids": [
+      "8xt7qRfDdzU"
+    ],
+    "baseline": {
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0
+    },
+    "reranked": {
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0
+    },
+    "top_video_ids": [
+      "8xt7qRfDdzU",
+      "8xt7qRfDdzU",
+      "8xt7qRfDdzU",
+      "8xt7qRfDdzU",
+      "8xt7qRfDdzU",
+      "8xt7qRfDdzU",
+      "8xt7qRfDdzU",
+      "8xt7qRfDdzU",
+      "8xt7qRfDdzU",
+      "8xt7qRfDdzU"
+    ]
+  },
+  {
+    "q": "How does Kenny Lattimore describe staying relevant and growing with the music industry on R&B Money?",
+    "expected_video_ids": [
+      "VEdX9D_ZFTY"
+    ],
+    "baseline": {
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0
+    },
+    "reranked": {
+      "recall10": 1.0,
+      "mrr10": 1.0,
+      "ndcg10": 1.0
+    },
+    "top_video_ids": [
+      "VEdX9D_ZFTY",
+      "VEdX9D_ZFTY",
+      "VEdX9D_ZFTY",
+      "VEdX9D_ZFTY",
+      "VEdX9D_ZFTY",
+      "VEdX9D_ZFTY",
+      "VEdX9D_ZFTY",
+      "VEdX9D_ZFTY",
+      "VEdX9D_ZFTY",
+      "VEdX9D_ZFTY"
     ]
   }
 ]

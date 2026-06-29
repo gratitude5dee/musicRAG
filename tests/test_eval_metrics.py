@@ -1,6 +1,6 @@
 import pytest
 
-from musicrag.eval.run_eval import metrics_at_10, validate_golden
+from musicrag.eval.run_eval import MIN_GOLDEN_CHANNELS, MIN_GOLDEN_QUESTIONS, metrics_at_10, validate_golden
 
 
 def test_metrics_at_10_dedupes_relevant_episode_hits():
@@ -31,12 +31,12 @@ def test_validate_golden_requires_minimum_question_count():
 
 def test_validate_golden_accepts_required_shape():
     items = []
-    for index in range(30):
+    for index in range(MIN_GOLDEN_QUESTIONS):
         items.append(
             {
                 "q": f"Question {index}?",
                 "expected_video_ids": [f"video-{index}"],
-                "channel": f"Channel {index % 9}",
+                "channel": f"Channel {index % MIN_GOLDEN_CHANNELS}",
             }
         )
     validate_golden(items)

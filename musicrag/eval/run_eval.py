@@ -8,8 +8,8 @@ from pathlib import Path
 from musicrag.query.rerank import rerank
 from musicrag.query.retrieve import retrieve
 
-MIN_GOLDEN_QUESTIONS = 30
-MIN_GOLDEN_CHANNELS = 9
+MIN_GOLDEN_QUESTIONS = 40
+MIN_GOLDEN_CHANNELS = 12
 TARGET_RECALL10 = 0.85
 TARGET_MRR10 = 0.60
 

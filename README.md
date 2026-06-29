@@ -25,7 +25,7 @@ pip install -r requirements.txt
 cp .env.example .env
 ```
 
-Fill `.env` with `MONGODB_URI`, `VOYAGE_API_KEY`, and `AI_GATEWAY_API_KEY`.
+Fill `.env` with `VOYAGE_API_KEY` and `AI_GATEWAY_API_KEY`, plus either `MONGODB_URI` or the split MongoDB values: `MONGODB_HOST`, `MONGODB_USERNAME`, `MONGODB_PASSWORD`, and `MONGODB_OPTIONS`.
 
 ## Ingestion
 
@@ -45,7 +45,7 @@ python -m musicrag.query.cli "How do A&R find new artists?"
 
 ## Evaluation
 
-The retrieval eval set lives at `eval/golden.jsonl` and currently contains 34 questions across all 9 channels.
+The retrieval eval set lives at `eval/golden.jsonl` and currently contains 40 questions across all 12 channels.
 
 ```bash
 python -m musicrag.eval.run_eval
@@ -74,6 +74,14 @@ npm run dev
 ```
 
 The web app reads from `music_rag.chunks`, `music_rag.channels`, and `music_rag.entities`. It does not ingest or mutate corpus chunks.
+
+## Deployment
+
+The Vercel project is linked from `web/` and deployed at `https://web-iota-neon-52.vercel.app`.
+
+Required production env vars are `MONGODB_HOST`, `MONGODB_USERNAME`, `MONGODB_PASSWORD`, `MONGODB_DB`, `MONGODB_OPTIONS`, `VOYAGE_API_KEY`, `AI_GATEWAY_API_KEY`, and `GENERATION_MODEL`.
+
+Dynamic API routes also require MongoDB Atlas Network Access for Vercel egress. Use Vercel Secure Compute or another controlled egress option for production, then allow that egress in Atlas. A temporary broad Atlas allow-list can unblock testing, but should not be treated as the production posture.
 
 ## GitHub
 
