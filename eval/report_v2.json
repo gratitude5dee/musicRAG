@@ -1,0 +1,825 @@
+{
+  "summary": {
+    "questions": 34,
+    "baseline_recall10": 0.8824,
+    "baseline_mrr10": 0.8676,
+    "baseline_ndcg10": 0.8715,
+    "reranked_recall10": 0.9265,
+    "reranked_mrr10": 0.9412,
+    "reranked_ndcg10": 0.9298,
+    "agent_recall10": 0.9559,
+    "agent_mrr10": 0.9706,
+    "agent_ndcg10": 0.9592
+  },
+  "per_intent": {
+    "entity_lookup": {
+      "questions": 20,
+      "baseline_recall10": 0.8,
+      "baseline_mrr10": 0.8,
+      "baseline_ndcg10": 0.8,
+      "reranked_recall10": 0.875,
+      "reranked_mrr10": 0.9,
+      "reranked_ndcg10": 0.8807,
+      "agent_recall10": 0.925,
+      "agent_mrr10": 0.95,
+      "agent_ndcg10": 0.9307
+    },
+    "thematic": {
+      "questions": 14,
+      "baseline_recall10": 1.0,
+      "baseline_mrr10": 0.9643,
+      "baseline_ndcg10": 0.9736,
+      "reranked_recall10": 1.0,
+      "reranked_mrr10": 1.0,
+      "reranked_ndcg10": 1.0,
+      "agent_recall10": 1.0,
+      "agent_mrr10": 1.0,
+      "agent_ndcg10": 1.0
+    }
+  },
+  "rows": [
+    {
+      "q": "How did Andrew Watt become a go-to producer for major artists?",
+      "intent": "entity_lookup",
+      "agent_intent": "entity_lookup",
+      "expected_video_ids": [
+        "KIYLFqTweYs"
+      ],
+      "baseline": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "reranked": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "agent": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      }
+    },
+    {
+      "q": "What does Ashley Gorley say about writing many number one songs?",
+      "intent": "entity_lookup",
+      "agent_intent": "entity_lookup",
+      "expected_video_ids": [
+        "OgtCzTe54n4"
+      ],
+      "baseline": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "reranked": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "agent": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      }
+    },
+    {
+      "q": "How does Charlie Puth describe becoming a superstar?",
+      "intent": "entity_lookup",
+      "agent_intent": "entity_lookup",
+      "expected_video_ids": [
+        "bxovEgjRwZg"
+      ],
+      "baseline": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "reranked": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "agent": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      }
+    },
+    {
+      "q": "What does D'Mile share about almost quitting before producing Silk Sonic, Bruno Mars, and Gaga?",
+      "intent": "entity_lookup",
+      "agent_intent": "entity_lookup",
+      "expected_video_ids": [
+        "u0w55knNF48"
+      ],
+      "baseline": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "reranked": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "agent": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      }
+    },
+    {
+      "q": "What did Jimmy Iovine say about building Interscope Records and Beats by Dre?",
+      "intent": "entity_lookup",
+      "agent_intent": "entity_lookup",
+      "expected_video_ids": [
+        "niqahsc9jfo"
+      ],
+      "baseline": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "reranked": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "agent": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      }
+    },
+    {
+      "q": "What lessons does Gustav Soderstrom share from Spotify's company story?",
+      "intent": "thematic",
+      "agent_intent": "thematic",
+      "expected_video_ids": [
+        "qYnVDIgZxlI"
+      ],
+      "baseline": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "reranked": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "agent": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      }
+    },
+    {
+      "q": "How does Ed Catmull describe building Pixar and cultivating creativity?",
+      "intent": "thematic",
+      "agent_intent": "thematic",
+      "expected_video_ids": [
+        "6ffhW9WAUv0"
+      ],
+      "baseline": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "reranked": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "agent": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      }
+    },
+    {
+      "q": "How should an audio engineer brand themselves according to EngineEars?",
+      "intent": "entity_lookup",
+      "agent_intent": "entity_lookup",
+      "expected_video_ids": [
+        "ZW7LGkVaeQ8"
+      ],
+      "baseline": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "reranked": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "agent": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      }
+    },
+    {
+      "q": "How did IRKO become a respected mix engineer?",
+      "intent": "thematic",
+      "agent_intent": "thematic",
+      "expected_video_ids": [
+        "FECbhcHxpEc"
+      ],
+      "baseline": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "reranked": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "agent": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      }
+    },
+    {
+      "q": "What can engineers learn from MixedByAli mixing Ling Hussle's That Way?",
+      "intent": "entity_lookup",
+      "agent_intent": "entity_lookup",
+      "expected_video_ids": [
+        "jw9NyUJ4Ly0"
+      ],
+      "baseline": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "reranked": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "agent": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      }
+    },
+    {
+      "q": "What organization advice does David Yungin Kim give from his work with Hit-Boy?",
+      "intent": "entity_lookup",
+      "agent_intent": "entity_lookup",
+      "expected_video_ids": [
+        "ondTlbp6ZEM"
+      ],
+      "baseline": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "reranked": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "agent": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      }
+    },
+    {
+      "q": "How did Alchemist turn beats into a business while cutting out the music industry?",
+      "intent": "thematic",
+      "agent_intent": "thematic",
+      "expected_video_ids": [
+        "OTGheE1muVI"
+      ],
+      "baseline": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "reranked": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "agent": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      }
+    },
+    {
+      "q": "How did Ibrahim Hamad build Dreamville beyond music while managing J. Cole?",
+      "intent": "thematic",
+      "agent_intent": "thematic",
+      "expected_video_ids": [
+        "_LZFgxOEM_k"
+      ],
+      "baseline": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "reranked": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "agent": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      }
+    },
+    {
+      "q": "What does DJ Premier say about his iconic production career?",
+      "intent": "thematic",
+      "agent_intent": "thematic",
+      "expected_video_ids": [
+        "WDHjf-sCKBk"
+      ],
+      "baseline": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "reranked": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "agent": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      }
+    },
+    {
+      "q": "How does Danny Brown talk about career anxiety and rap saving or ruining his life?",
+      "intent": "thematic",
+      "agent_intent": "thematic",
+      "expected_video_ids": [
+        "twydXIVqB7U"
+      ],
+      "baseline": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "reranked": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "agent": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      }
+    },
+    {
+      "q": "Why does an A&R legend say consistency beats talent?",
+      "intent": "entity_lookup",
+      "agent_intent": "entity_lookup",
+      "expected_video_ids": [
+        "YLhCEHeBDrg"
+      ],
+      "baseline": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "reranked": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "agent": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      }
+    },
+    {
+      "q": "Why do many artists never break through according to an A&R legend?",
+      "intent": "entity_lookup",
+      "agent_intent": "entity_lookup",
+      "expected_video_ids": [
+        "eDFUpI_5u3E"
+      ],
+      "baseline": {
+        "recall10": 0.0,
+        "mrr10": 0.0,
+        "ndcg10": 0.0
+      },
+      "reranked": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "agent": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      }
+    },
+    {
+      "q": "What does Russ say about why one hundred thousand dollars will not make someone a star?",
+      "intent": "entity_lookup",
+      "agent_intent": "entity_lookup",
+      "expected_video_ids": [
+        "Z-bvSw8vJMY"
+      ],
+      "baseline": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "reranked": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "agent": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      }
+    },
+    {
+      "q": "How is artist branding in 2025 explained?",
+      "intent": "entity_lookup",
+      "agent_intent": "thematic",
+      "expected_video_ids": [
+        "BLwEeA3x0Lc",
+        "f-p6gfC0T_U"
+      ],
+      "baseline": {
+        "recall10": 0.0,
+        "mrr10": 0.0,
+        "ndcg10": 0.0
+      },
+      "reranked": {
+        "recall10": 0.5,
+        "mrr10": 1.0,
+        "ndcg10": 0.6131471927654584
+      },
+      "agent": {
+        "recall10": 0.5,
+        "mrr10": 1.0,
+        "ndcg10": 0.6131471927654584
+      }
+    },
+    {
+      "q": "What are key reasons music projects fail to grow?",
+      "intent": "thematic",
+      "agent_intent": "thematic",
+      "expected_video_ids": [
+        "mMnTM4a0NWY"
+      ],
+      "baseline": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "reranked": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "agent": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      }
+    },
+    {
+      "q": "How can an artist build a cult following through storytelling?",
+      "intent": "thematic",
+      "agent_intent": "thematic",
+      "expected_video_ids": [
+        "pMarIH7R8to"
+      ],
+      "baseline": {
+        "recall10": 1.0,
+        "mrr10": 0.5,
+        "ndcg10": 0.6309297535714575
+      },
+      "reranked": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "agent": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      }
+    },
+    {
+      "q": "How do social media algorithms work for music artists?",
+      "intent": "thematic",
+      "agent_intent": "thematic",
+      "expected_video_ids": [
+        "lRk41xMHaf0"
+      ],
+      "baseline": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "reranked": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "agent": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      }
+    },
+    {
+      "q": "What does the music brand full masterclass teach about building a brand?",
+      "intent": "entity_lookup",
+      "agent_intent": "entity_lookup",
+      "expected_video_ids": [
+        "7Bvkoe21n98"
+      ],
+      "baseline": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "reranked": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "agent": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      }
+    },
+    {
+      "q": "How have record label deals changed according to the music executive interview?",
+      "intent": "entity_lookup",
+      "agent_intent": "entity_lookup",
+      "expected_video_ids": [
+        "R1GdwYw0pSw"
+      ],
+      "baseline": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "reranked": {
+        "recall10": 0.0,
+        "mrr10": 0.0,
+        "ndcg10": 0.0
+      },
+      "agent": {
+        "recall10": 0.0,
+        "mrr10": 0.0,
+        "ndcg10": 0.0
+      }
+    },
+    {
+      "q": "What are examples of viral content ideas for musicians?",
+      "intent": "thematic",
+      "agent_intent": "thematic",
+      "expected_video_ids": [
+        "eN3d16rloeM"
+      ],
+      "baseline": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "reranked": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "agent": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      }
+    },
+    {
+      "q": "What two types of ads can increase music streams?",
+      "intent": "thematic",
+      "agent_intent": "thematic",
+      "expected_video_ids": [
+        "FTs0TmRLVjA"
+      ],
+      "baseline": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "reranked": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "agent": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      }
+    },
+    {
+      "q": "How can musicians use comment sections to grow for free?",
+      "intent": "thematic",
+      "agent_intent": "thematic",
+      "expected_video_ids": [
+        "NyWPUg_3F6w"
+      ],
+      "baseline": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "reranked": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "agent": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      }
+    },
+    {
+      "q": "What does Ali Shaheed Muhammad say about J Dilla, sampling, and A&R?",
+      "intent": "entity_lookup",
+      "agent_intent": "entity_lookup",
+      "expected_video_ids": [
+        "zDigxcOSUJE"
+      ],
+      "baseline": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "reranked": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "agent": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      }
+    },
+    {
+      "q": "How do Amadou and Mariam talk about songwriting and their musical mission?",
+      "intent": "thematic",
+      "agent_intent": "thematic",
+      "expected_video_ids": [
+        "jFMY7hmzxm4"
+      ],
+      "baseline": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "reranked": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "agent": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      }
+    },
+    {
+      "q": "What does Boi-1da say about Eminem, Drake, and Christian rap?",
+      "intent": "entity_lookup",
+      "agent_intent": "entity_lookup",
+      "expected_video_ids": [
+        "sP8YO5ncjgA"
+      ],
+      "baseline": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "reranked": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "agent": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      }
+    },
+    {
+      "q": "What does Breakbeat Lou say about Ultimate Breaks and Beats and growing with hip-hop?",
+      "intent": "entity_lookup",
+      "agent_intent": "entity_lookup",
+      "expected_video_ids": [
+        "qdLcsq4S0CI"
+      ],
+      "baseline": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "reranked": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "agent": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      }
+    },
+    {
+      "q": "What does Bob Pittman discuss with Rick Rubin on Tetragrammaton?",
+      "intent": "entity_lookup",
+      "agent_intent": "entity_lookup",
+      "expected_video_ids": [
+        "DJy1RF3Sa2M"
+      ],
+      "baseline": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "reranked": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "agent": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      }
+    },
+    {
+      "q": "What does Bernard MacMahon discuss with Rick Rubin on Tetragrammaton?",
+      "intent": "entity_lookup",
+      "agent_intent": "entity_lookup",
+      "expected_video_ids": [
+        "Te50Pm9oQsY"
+      ],
+      "baseline": {
+        "recall10": 0.0,
+        "mrr10": 0.0,
+        "ndcg10": 0.0
+      },
+      "reranked": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      },
+      "agent": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      }
+    },
+    {
+      "q": "What does Adam D'Angelo discuss with Rick Rubin on Tetragrammaton?",
+      "intent": "entity_lookup",
+      "agent_intent": "entity_lookup",
+      "expected_video_ids": [
+        "Zsij0ZJZnYo"
+      ],
+      "baseline": {
+        "recall10": 0.0,
+        "mrr10": 0.0,
+        "ndcg10": 0.0
+      },
+      "reranked": {
+        "recall10": 0.0,
+        "mrr10": 0.0,
+        "ndcg10": 0.0
+      },
+      "agent": {
+        "recall10": 1.0,
+        "mrr10": 1.0,
+        "ndcg10": 1.0
+      }
+    }
+  ]
+}

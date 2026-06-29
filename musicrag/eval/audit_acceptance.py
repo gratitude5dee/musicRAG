@@ -34,9 +34,13 @@ def warn(name: str, evidence: str) -> Check:
 
 
 def env_check() -> list[Check]:
-    required = ["MONGODB_URI", "VOYAGE_API_KEY", "AI_GATEWAY_API_KEY"]
     checks = []
-    for key in required:
+    cfg = settings()
+    mongo_evidence = "set via MONGODB_URI" if os.getenv("MONGODB_URI") else "set via split env"
+    checks.append(
+        ok("env:mongodb", mongo_evidence) if cfg.mongodb_uri else fail("env:mongodb", "missing")
+    )
+    for key in ["VOYAGE_API_KEY", "AI_GATEWAY_API_KEY"]:
         checks.append(
             ok(f"env:{key}", "set") if os.getenv(key) else fail(f"env:{key}", "missing")
         )
@@ -98,7 +102,7 @@ def search_index_state(collection) -> dict[str, Any]:
 def db_check() -> list[Check]:
     cfg = settings()
     if not cfg.mongodb_uri:
-        return [fail("db:connect", "MONGODB_URI missing")]
+        return [fail("db:connect", "MongoDB connection env missing")]
     checks: list[Check] = []
     try:
         client = get_mongo_client(cfg.mongodb_uri)

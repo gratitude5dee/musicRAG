@@ -4,6 +4,7 @@ import os
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
+from urllib.parse import quote_plus
 
 import certifi
 from dotenv import load_dotenv
@@ -12,6 +13,33 @@ from pymongo import MongoClient
 load_dotenv()
 
 _mongo_client: Optional[MongoClient] = None
+
+
+def normalize_mongodb_host(host: str) -> str:
+    host = host.strip()
+    if host.startswith("mongodb+srv://"):
+        host = host.removeprefix("mongodb+srv://")
+    elif host.startswith("mongodb://"):
+        host = host.removeprefix("mongodb://")
+    return host.split("/", 1)[0]
+
+
+def build_mongodb_uri(
+    explicit_uri: str,
+    host: str,
+    username: str,
+    password: str,
+    options: str = "retryWrites=true&w=majority&appName=musicRAG",
+) -> str:
+    if explicit_uri:
+        return explicit_uri
+    if not (host and username and password):
+        return ""
+    normalized_host = normalize_mongodb_host(host)
+    encoded_user = quote_plus(username)
+    encoded_password = quote_plus(password)
+    suffix = f"?{options.lstrip('?')}" if options else ""
+    return f"mongodb+srv://{encoded_user}:{encoded_password}@{normalized_host}/{suffix}"
 
 
 @dataclass(frozen=True)
@@ -34,8 +62,15 @@ class Settings:
     @classmethod
     def from_env(cls) -> "Settings":
         root = Path(os.getenv("TRANSCRIPTS_ROOT", "../musicindustrytranscripts/transcripts"))
+        mongodb_uri = build_mongodb_uri(
+            explicit_uri=os.getenv("MONGODB_URI", ""),
+            host=os.getenv("MONGODB_HOST", ""),
+            username=os.getenv("MONGODB_USERNAME", ""),
+            password=os.getenv("MONGODB_PASSWORD", ""),
+            options=os.getenv("MONGODB_OPTIONS", "retryWrites=true&w=majority&appName=musicRAG"),
+        )
         return cls(
-            mongodb_uri=os.getenv("MONGODB_URI", ""),
+            mongodb_uri=mongodb_uri,
             mongodb_db=os.getenv("MONGODB_DB", "music_rag"),
             transcripts_root=root,
             voyage_api_key=os.getenv("VOYAGE_API_KEY", ""),
@@ -74,4 +109,3 @@ def get_mongo_client(uri: str | None = None) -> MongoClient:
 def get_db():
     cfg = settings()
     return get_mongo_client(cfg.mongodb_uri)[cfg.mongodb_db]
-

@@ -18,6 +18,7 @@ node_modules/
 out/
 dist/
 coverage/
+*.tsbuildinfo
 web/.env.local
 web/.env*.local
 

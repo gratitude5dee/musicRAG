@@ -37,6 +37,46 @@ export async function embedQuery(query: string) {
   return embedding
 }
 
+// Give the cross-encoder who/where context, mirroring musicrag.query.rerank.
+export function formatForRerank(doc: Record<string, unknown>) {
+  const title = String(doc.title ?? 'Untitled')
+  const guests = Array.isArray(doc.guests) ? doc.guests.join(', ') : ''
+  const channel = String(doc.channel ?? '')
+  let header = `[${title}`
+  if (guests) header += ` — ${guests}`
+  header += channel ? ` · ${channel}]` : ']'
+  return `${header}\n${String(doc.text ?? '')}`
+}
+
+// Score ALL candidates (rich input) so the agent can fuse + episode-aggregate.
+export async function rerankCandidates(query: string, docs: Record<string, unknown>[]) {
+  if (!docs.length) return []
+  if (!process.env.VOYAGE_API_KEY) {
+    return docs.map((d) => ({ ...d, rerank_score: Number(d.rrf_score ?? d.score ?? 0) }))
+  }
+  const response = await fetch(`${MONGODB_AI_BASE_URL}/rerank`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${process.env.VOYAGE_API_KEY}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      model: process.env.RERANK_MODEL ?? 'rerank-2.5',
+      query,
+      documents: docs.map(formatForRerank)
+    })
+  })
+  if (!response.ok) {
+    return docs.map((d) => ({ ...d, rerank_score: Number(d.rrf_score ?? 0) }))
+  }
+  const payload = (await response.json()) as RerankResponse
+  const results = payload.results ?? payload.data ?? []
+  return results.map((result) => ({
+    ...docs[result.index],
+    rerank_score: result.relevance_score ?? result.score ?? 0
+  }))
+}
+
 export async function rerank(query: string, docs: Record<string, unknown>[], topK = 8) {
   if (!docs.length) return []
   if (!process.env.VOYAGE_API_KEY) {

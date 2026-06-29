@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { gatewayTextStream } from '@/lib/gateway'
-import { retrieve, toSource } from '@/lib/retrieval'
-import { rerank } from '@/lib/voyage'
+import { toSource } from '@/lib/retrieval'
+import { runAgent } from '@/lib/agent'
 import type { Filters } from '@/lib/types'
 
 export const runtime = 'nodejs'
@@ -21,15 +21,26 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'question is required' }, { status: 400 })
     }
 
-    const retrieved = await retrieve(question, body.filters)
-    const reranked = await rerank(question, retrieved, 8)
-    const sources = reranked.map(toSource)
-    const textStream = gatewayTextStream(question, sources)
+    // Agentic retrieval: classify -> route (entity/thematic/comparative/aggregative)
+    // -> grade -> rewrite. Explicit body.filters hard-filter; inferred facets stay soft.
+    const { plan, docs, trace } = await runAgent(question, body.filters)
+    const sources = docs.map(toSource)
 
     const stream = new ReadableStream<Uint8Array>({
       async start(controller) {
+        controller.enqueue(
+          sse('meta', {
+            intent: plan.intent,
+            guests: plan.guests,
+            channels: plan.channels,
+            topics: plan.topics,
+            trace
+          })
+        )
         controller.enqueue(sse('sources', sources))
         try {
+          // Created here so a missing AI_GATEWAY_API_KEY still streams meta + sources.
+          const textStream = gatewayTextStream(question, sources)
           for await (const token of textStream) {
             if (token) {
               controller.enqueue(sse('token', { token }))
@@ -38,7 +49,9 @@ export async function POST(req: Request) {
           controller.enqueue(sse('done', {}))
           controller.close()
         } catch (error) {
-          controller.enqueue(sse('error', { message: error instanceof Error ? error.message : 'stream failed' }))
+          controller.enqueue(
+            sse('error', { message: error instanceof Error ? error.message : 'stream failed' })
+          )
           controller.close()
         }
       }
