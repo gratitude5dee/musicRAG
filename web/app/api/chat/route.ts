@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { gatewayTextStream } from '@/lib/gateway'
+import { publicMongoError } from '@/lib/mongodb'
 import { toSource } from '@/lib/retrieval'
 import { runAgent } from '@/lib/agent'
 import { assignSourceIds, validateCitations } from '@/lib/rag-harness'
@@ -48,7 +49,7 @@ function publicError(error: unknown) {
   if (
     /MongoServerSelectionError|ETIMEDOUT|ECONNREFUSED|ENETUNREACH|27017/.test(message)
   ) {
-    return 'MongoDB Atlas connection timed out from Vercel. Allow Vercel egress in Atlas Network Access, or enable Vercel Secure Compute/static egress and allow that address.'
+    return publicMongoError(error)
   }
   if (/positive credit balance|insufficient_funds|Payment Required|402/i.test(message)) {
     return 'Vercel AI Gateway needs a positive credit balance before Gemini can answer. Retrieval is working; add AI Gateway credits in Vercel, then retry.'

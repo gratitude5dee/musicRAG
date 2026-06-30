@@ -1,6 +1,7 @@
-import { MongoClient } from 'mongodb'
+import { MongoClient, type MongoClientOptions } from 'mongodb'
 
 let client: MongoClient | null = null
+const DEFAULT_SERVER_SELECTION_TIMEOUT_MS = 8000
 
 function normalizeMongoHost(host: string) {
   if (host.startsWith('mongodb+srv://')) return host.replace('mongodb+srv://', '').split('/')[0]
@@ -21,13 +22,40 @@ export function getMongoUri() {
   return `mongodb+srv://${encodedUser}:${encodedPassword}@${normalizedHost}/?${params.replace(/^\?/, '')}`
 }
 
+function envNumber(name: string, fallback: number) {
+  const value = Number(process.env[name])
+  return Number.isFinite(value) && value > 0 ? value : fallback
+}
+
+function mongoClientOptions(): MongoClientOptions {
+  const serverSelectionTimeoutMS = envNumber(
+    'MONGODB_SERVER_SELECTION_TIMEOUT_MS',
+    DEFAULT_SERVER_SELECTION_TIMEOUT_MS
+  )
+  return {
+    serverSelectionTimeoutMS,
+    connectTimeoutMS: envNumber('MONGODB_CONNECT_TIMEOUT_MS', serverSelectionTimeoutMS)
+  }
+}
+
+export function publicMongoError(error: unknown) {
+  const message = error instanceof Error ? error.message : String(error)
+  if (/MONGODB_URI|MONGODB_HOST|MONGODB_USERNAME|MONGODB_PASSWORD/.test(message)) {
+    return 'MongoDB runtime env is missing. Set MONGODB_URI, or set MONGODB_HOST, MONGODB_USERNAME, and MONGODB_PASSWORD.'
+  }
+  if (/MongoServerSelectionError|ETIMEDOUT|ECONNREFUSED|ENETUNREACH|27017|server selection/i.test(message)) {
+    return 'MongoDB Atlas connection timed out from Vercel. Allow Vercel egress in Atlas Network Access, or enable Vercel Secure Compute/static egress and allow that address.'
+  }
+  return message
+}
+
 export async function getMongoClient() {
   const uri = getMongoUri()
   if (!uri) {
     throw new Error('MONGODB_URI or MONGODB_HOST/MONGODB_USERNAME/MONGODB_PASSWORD is required')
   }
   if (!client) {
-    client = new MongoClient(uri)
+    client = new MongoClient(uri, mongoClientOptions())
   }
   await client.connect()
   return client

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createThread, listThreads } from '@/lib/chat-store'
+import { publicMongoError } from '@/lib/mongodb'
 
 export const runtime = 'nodejs'
 
@@ -8,7 +9,7 @@ function logInfo(msg: string, data: Record<string, unknown>) {
 }
 
 function publicError(error: unknown) {
-  return error instanceof Error ? error.message : 'thread request failed'
+  return publicMongoError(error)
 }
 
 export async function GET(req: Request) {
