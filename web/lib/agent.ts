@@ -51,6 +51,23 @@ const AGG = [
   /\brecurring\b/
 ]
 
+const GENERIC_INDUSTRY_ROLE_TOPICS = new Set([
+  'a&r',
+  'a & r',
+  'artist',
+  'artists',
+  'manager',
+  'managers',
+  'producer',
+  'producers',
+  'songwriter',
+  'songwriters',
+  'engineer',
+  'engineers',
+  'publisher',
+  'publishers'
+])
+
 function canon(text: string) {
   return text
     .replace(/[’‘`´]/g, "'")
@@ -116,9 +133,14 @@ export async function loadVocabulary(db: Db): Promise<Vocabulary> {
 
 export function classifyIntent(query: string, vocab: Vocabulary): QueryPlan {
   const text = ` ${canon(query)} `
-  const guests = matchVocab(text, vocab.guests)
+  const topicMatches = matchVocab(text, vocab.topics)
+  const topicNames = new Set(topicMatches.map((topic) => canon(topic)))
+  const guests = matchVocab(text, vocab.guests).filter((guest) => {
+    const normalized = canon(guest)
+    return !topicNames.has(normalized) && !GENERIC_INDUSTRY_ROLE_TOPICS.has(normalized)
+  })
   const channels = matchVocab(text, vocab.channels)
-  const topics = matchVocab(text, vocab.topics)
+  const topics = topicMatches
   const named = [...guests, ...channels]
   const isCompare = COMPARE.some((r) => r.test(text))
   const isAgg = AGG.some((r) => r.test(text))
