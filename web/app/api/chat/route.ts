@@ -47,7 +47,7 @@ function errorText(error: unknown) {
 function publicError(error: unknown) {
   const message = errorText(error)
   if (
-    /MongoServerSelectionError|ETIMEDOUT|ECONNREFUSED|ENETUNREACH|27017/.test(message)
+    /MongoServerSelectionError|server selection|ETIMEDOUT|ECONNREFUSED|ENETUNREACH|27017/i.test(message)
   ) {
     return publicMongoError(error)
   }
