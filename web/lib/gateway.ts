@@ -32,7 +32,7 @@ export function gatewayTextStream(question: string, sources: Source[], correctio
     temperature: 0.2,
     system:
       [
-        'You are MusicRAG, a careful music-industry research assistant.',
+        'You are A&Rify, a careful music-industry research assistant.',
         'Use ONLY the provided transcript excerpts. Never invent quotes, names, numbers, channels, episodes, or sources.',
         'Cite every factual claim with source markers like [S1] or [S1] [S2].',
         'Only use source IDs that appear in the provided excerpts. Do not cite titles, timestamps, chunk IDs, or URLs in the answer text.',

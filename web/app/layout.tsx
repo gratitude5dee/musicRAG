@@ -4,7 +4,7 @@ import { GeistMono } from 'geist/font/mono'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'MusicRAG',
+  title: 'A&Rify',
   description: 'Ask the Music Industry Transcripts with cited timestamped sources.'
 }
 
@@ -15,4 +15,3 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     </html>
   )
 }
-

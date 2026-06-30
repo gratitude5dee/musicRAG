@@ -17,7 +17,7 @@ function cleanText(value: string, fallback: string) {
 }
 
 function titleFromQuestion(question: string) {
-  const title = cleanText(question, 'New MusicRAG chat')
+  const title = cleanText(question, 'New A&Rify chat')
   return title.length > 72 ? `${title.slice(0, 69)}...` : title
 }
 
@@ -28,7 +28,7 @@ function serializeDate(value: unknown) {
 function serializeThread(doc: Record<string, unknown>): ChatThread {
   return {
     thread_id: String(doc.thread_id),
-    title: String(doc.title ?? 'New MusicRAG chat'),
+    title: String(doc.title ?? 'New A&Rify chat'),
     project_id: (doc.project_id as string | null | undefined) ?? null,
     pinned: Boolean(doc.pinned),
     archived: Boolean(doc.archived),
@@ -84,7 +84,7 @@ export async function createThread({
   const thread = {
     thread_id: newThreadId(),
     session_id: normalizeSessionId(sessionId),
-    title: question ? titleFromQuestion(question) : 'New MusicRAG chat',
+    title: question ? titleFromQuestion(question) : 'New A&Rify chat',
     pinned: false,
     archived: false,
     deleted_at: null,
@@ -173,7 +173,7 @@ export async function updateThread(
   }
 ) {
   const $set: Record<string, unknown> = { updated_at: new Date() }
-  if (patch.title !== undefined) $set.title = cleanText(patch.title, 'New MusicRAG chat').slice(0, 120)
+  if (patch.title !== undefined) $set.title = cleanText(patch.title, 'New A&Rify chat').slice(0, 120)
   if (patch.pinned !== undefined) $set.pinned = patch.pinned
   if (patch.archived !== undefined) $set.archived = patch.archived
   if (patch.project_id !== undefined) $set.project_id = patch.project_id

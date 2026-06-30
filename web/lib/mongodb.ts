@@ -41,10 +41,10 @@ function mongoClientOptions(): MongoClientOptions {
 export function publicMongoError(error: unknown) {
   const message = error instanceof Error ? error.message : String(error)
   if (/MONGODB_URI|MONGODB_HOST|MONGODB_USERNAME|MONGODB_PASSWORD/.test(message)) {
-    return 'MongoDB runtime env is missing. Set MONGODB_URI, or set MONGODB_HOST, MONGODB_USERNAME, and MONGODB_PASSWORD.'
+    return 'Database runtime env is missing. Set the production database connection variables before using retrieval.'
   }
   if (/MongoServerSelectionError|ETIMEDOUT|ECONNREFUSED|ENETUNREACH|27017|server selection/i.test(message)) {
-    return 'MongoDB Atlas connection timed out from Vercel. Allow Vercel egress in Atlas Network Access, or enable Vercel Secure Compute/static egress and allow that address.'
+    return 'Database connection timed out from Vercel. Allow Vercel egress in the database network access settings, or enable Vercel Secure Compute/static egress and allow that address.'
   }
   return message
 }

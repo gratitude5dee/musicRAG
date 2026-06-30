@@ -389,7 +389,7 @@ export function ChatShell({ initialThreadId }: { initialThreadId?: string }) {
       <aside className="workspace-sidebar" aria-label="Workspace">
         <div className="sidebar-brand">
           <Library size={18} aria-hidden="true" />
-          <span>MusicRAG</span>
+          <span>A&amp;Rify</span>
           <button type="button" title="Collapse sidebar">
             <ChevronLeft size={16} aria-hidden="true" />
           </button>
@@ -425,8 +425,8 @@ export function ChatShell({ initialThreadId }: { initialThreadId?: string }) {
         <div className="sidebar-account">
           <div className="avatar">M</div>
           <div>
-            <strong>MusicRAG</strong>
-            <span>MongoDB workspace</span>
+            <strong>A&amp;Rify</strong>
+            <span>Music intelligence workspace</span>
           </div>
         </div>
       </aside>
@@ -437,7 +437,7 @@ export function ChatShell({ initialThreadId }: { initialThreadId?: string }) {
         </button>
         <div className="brand-pill">
           <Library size={18} aria-hidden="true" />
-          <span>MusicRAG</span>
+          <span>A&amp;Rify</span>
         </div>
         <nav className="top-actions" aria-label="Session actions">
           <button type="button" title="Share"><Share size={18} aria-hidden="true" /></button>
