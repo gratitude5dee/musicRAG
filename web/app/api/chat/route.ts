@@ -4,7 +4,15 @@ import { toSource } from '@/lib/retrieval'
 import { runAgent } from '@/lib/agent'
 import { assignSourceIds, validateCitations } from '@/lib/rag-harness'
 import { createChatRun, newRunId, updateChatRun } from '@/lib/chat-runs'
-import type { Filters } from '@/lib/types'
+import {
+  chatRunPatch,
+  compactSources,
+  createMessage,
+  ensureThread,
+  updateMessage
+} from '@/lib/chat-store'
+import { validateModelSelection } from '@/lib/models'
+import type { ChatMode, Filters } from '@/lib/types'
 
 export const runtime = 'nodejs'
 export const maxDuration = 60
@@ -51,8 +59,13 @@ function publicError(error: unknown) {
   return message
 }
 
-async function collectGatewayAnswer(question: string, sources: ReturnType<typeof assignSourceIds>, correction?: string) {
-  const result = gatewayTextStream(question, sources, correction)
+async function collectGatewayAnswer(
+  question: string,
+  sources: ReturnType<typeof assignSourceIds>,
+  model: string,
+  correction?: string
+) {
+  const result = gatewayTextStream(question, sources, correction, model)
   let text = ''
   let emittedText = false
   for await (const part of result.fullStream) {
@@ -80,26 +93,83 @@ function streamValidatedAnswer(controller: ReadableStreamDefaultController<Uint8
 
 export async function POST(req: Request) {
   try {
-    const body = (await req.json()) as { question?: string; filters?: Filters }
+    const body = (await req.json()) as {
+      question?: string
+      filters?: Filters
+      threadId?: string
+      sessionId?: string
+      mode?: ChatMode
+      model?: string
+      parentRunId?: string
+      parentMessageId?: string
+    }
     const question = body.question?.trim()
     if (!question) {
       return NextResponse.json({ error: 'question is required' }, { status: 400 })
     }
+    const selection = validateModelSelection({ mode: body.mode, model: body.model })
     const runId = newRunId()
     const startedAt = Date.now()
 
     const stream = new ReadableStream<Uint8Array>({
       async start(controller) {
+        let assistantMessageId: string | null = null
         try {
           controller.enqueue(sse('thinking', { label: 'Thinking about your request' }))
+          const thread = await ensureThread({
+            threadId: body.threadId,
+            question,
+            sessionId: body.sessionId
+          })
+          const userMessage = await createMessage({
+            threadId: thread.thread_id,
+            role: 'user',
+            content: question,
+            status: 'complete'
+          })
+          const assistantMessage = await createMessage({
+            threadId: thread.thread_id,
+            role: 'assistant',
+            content: '',
+            status: 'streaming',
+            model: selection.model,
+            mode: selection.mode,
+            runId,
+            parentMessageId: body.parentMessageId
+          })
+          assistantMessageId = assistantMessage.message_id
+          controller.enqueue(
+            sse('meta', {
+              runId,
+              threadId: thread.thread_id,
+              userMessageId: userMessage.message_id,
+              assistantMessageId: assistantMessage.message_id,
+              model: selection.model,
+              mode: selection.mode
+            })
+          )
           await createChatRun({
             run_id: runId,
             question,
-            filters: body.filters ?? {},
-            model: process.env.GENERATION_MODEL ?? 'google/gemini-3.5-flash',
+            ...chatRunPatch({
+              threadId: thread.thread_id,
+              userMessageId: userMessage.message_id,
+              assistantMessageId: assistantMessage.message_id,
+              model: selection.model,
+              mode: selection.mode,
+              filters: body.filters
+            }),
+            parent_run_id: body.parentRunId,
+            parent_message_id: body.parentMessageId,
             status: 'retrieving'
           })
-          logInfo('chat_start', { runId, route: '/api/chat' })
+          logInfo('chat_start', {
+            runId,
+            threadId: thread.thread_id,
+            model: selection.model,
+            mode: selection.mode,
+            route: '/api/chat'
+          })
 
           controller.enqueue(sse('tool', { step: 'search_transcripts', label: 'Searching transcript corpus' }))
           const { plan, docs, trace, session } = await runAgent(question, body.filters)
@@ -107,6 +177,11 @@ export async function POST(req: Request) {
           controller.enqueue(
             sse('meta', {
               runId,
+              threadId: thread.thread_id,
+              userMessageId: userMessage.message_id,
+              assistantMessageId: assistantMessage.message_id,
+              model: selection.model,
+              mode: selection.mode,
               intent: plan.intent,
               guests: plan.guests,
               channels: plan.channels,
@@ -118,6 +193,7 @@ export async function POST(req: Request) {
           controller.enqueue(sse('sources', sources))
           logInfo('retrieval_done', {
             runId,
+            threadId: thread.thread_id,
             sourceCount: sources.length,
             intent: plan.intent,
             ms: Date.now() - startedAt
@@ -128,7 +204,7 @@ export async function POST(req: Request) {
             plan,
             trace,
             source_ids: sources.map((source) => source.id),
-            sources: sources.map(({ snippet, ...source }) => ({ ...source, snippet }))
+            sources: compactSources(sources)
           })
 
           let correction: string | undefined
@@ -147,7 +223,7 @@ export async function POST(req: Request) {
               logInfo('citation_retry', { runId, attempt, correction })
             }
             controller.enqueue(sse('tool', { step: 'synthesize', label: attempt ? 'Revising citations' : 'Grounding final answer' }))
-            const result = await collectGatewayAnswer(question, sources, correction)
+            const result = await collectGatewayAnswer(question, sources, selection.model, correction)
             answer = result.text
             usage = result.usage
             const validation = validateCitations(answer, sources)
@@ -162,6 +238,14 @@ export async function POST(req: Request) {
             if (validation.ok) {
               streamValidatedAnswer(controller, answer)
               controller.enqueue(sse('done', { runId, citedSourceIds, trace, usage }))
+              await updateMessage(assistantMessage.message_id, {
+                status: 'complete',
+                content: answer,
+                source_ids: sources.map((source) => source.id).filter(Boolean) as string[],
+                run_id: runId,
+                model: selection.model,
+                mode: selection.mode
+              })
               await updateChatRun(runId, {
                 status: 'complete',
                 answer,
@@ -172,6 +256,7 @@ export async function POST(req: Request) {
               })
               logInfo('chat_done', {
                 runId,
+                threadId: thread.thread_id,
                 citedSourceCount: citedSourceIds.length,
                 citationRetries: session.citationRetries,
                 ms: Date.now() - startedAt
@@ -185,6 +270,15 @@ export async function POST(req: Request) {
         } catch (error) {
           const message = publicError(error)
           logError('chat_failed', { runId, error: message, ms: Date.now() - startedAt })
+          if (assistantMessageId) {
+            await updateMessage(assistantMessageId, {
+              status: 'error',
+              content: `Error: ${message}`,
+              run_id: runId,
+              model: selection.model,
+              mode: selection.mode
+            })
+          }
           await updateChatRun(runId, {
             status: 'error',
             error: message,
@@ -206,9 +300,10 @@ export async function POST(req: Request) {
       }
     })
   } catch (error) {
+    const maybeStatus = error instanceof Error && 'status' in error ? Number(error.status) : 500
     return NextResponse.json(
       { error: publicError(error) },
-      { status: 500 }
+      { status: Number.isFinite(maybeStatus) ? maybeStatus : 500 }
     )
   }
 }

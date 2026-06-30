@@ -26,9 +26,9 @@ export function buildPrompt(question: string, sources: Source[], correction?: st
   return `Question: ${question}\n\nTranscript excerpts:\n${context}${repair}\n\nAnswer with concise synthesis and valid source markers.`
 }
 
-export function gatewayTextStream(question: string, sources: Source[], correction?: string) {
+export function gatewayTextStream(question: string, sources: Source[], correction?: string, model?: string) {
   return streamText({
-    model: process.env.GENERATION_MODEL ?? 'google/gemini-3.5-flash',
+    model: model ?? process.env.GENERATION_MODEL ?? 'google/gemini-3.5-flash',
     temperature: 0.2,
     system:
       [

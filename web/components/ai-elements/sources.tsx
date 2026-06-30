@@ -1,24 +1,45 @@
 'use client'
 
-import { ExternalLink, PlayCircle } from 'lucide-react'
+import { ExternalLink, Lightbulb, PlayCircle, X } from 'lucide-react'
 import { secondsToMmss } from '@/lib/gateway'
-import type { Source } from '@/lib/types'
+import type { AgentTraceEvent, Source } from '@/lib/types'
 
 export function SourcesPanel({
   sources,
   activeSourceId,
-  onSelect
+  onSelect,
+  onClose,
+  trace = []
 }: {
   sources: Source[]
   activeSourceId?: string | null
   onSelect?: (id: string) => void
+  onClose?: () => void
+  trace?: AgentTraceEvent[]
 }) {
   return (
     <aside className="sources-rail" aria-label="Sources">
       <div className="sources-head">
-        <p>Sources</p>
-        <span>{sources.length ? `${sources.length} transcript chunks` : 'Awaiting a question'}</span>
+        <div>
+          <p>Sources</p>
+          <span>{sources.length ? `${sources.length} transcript chunks` : 'Awaiting a question'}</span>
+        </div>
+        {onClose ? (
+          <button type="button" title="Close sources" onClick={onClose}>
+            <X size={17} aria-hidden="true" />
+          </button>
+        ) : null}
       </div>
+      {trace.length ? (
+        <div className="source-trace">
+          {trace.slice(-8).map((event, index) => (
+            <div key={`${event.step}-${index}`}>
+              <Lightbulb size={14} aria-hidden="true" />
+              <span>{event.label}</span>
+            </div>
+          ))}
+        </div>
+      ) : null}
       <div className="source-stack">
         {sources.map((source) => (
           <a
