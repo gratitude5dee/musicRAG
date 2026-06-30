@@ -143,14 +143,28 @@ def _route_entity(state: AgentState, tools: AgentTools) -> None:
     # Graph-guaranteed candidates: pull chunks for the resolved episodes even if a
     # blind chunk search would never surface them (the 0.0 known-item fix).
     for vid in resolved_videos[:5]:
-        candidates.extend(episode_chunks(vid, db=tools.db, limit=8))
+        candidates.extend(
+            {**chunk, "graph_resolved": True}
+            for chunk in episode_chunks(vid, db=tools.db, limit=8)
+        )
 
     # Union with UNFILTERED hybrid recall (explicit facets only) so the candidate
     # set never drops below the baseline retriever - the graph chunks are additive.
     candidates.extend(tools.retrieve(plan.query, state.filters, tools.candidate_limit))
 
     deduped = _dedupe(candidates)
-    state.docs = tools.rerank(plan.query, deduped, tools.top_k)
+    base_docs = tools.rerank(plan.query, deduped, tools.top_k)
+    if resolved_videos and not grade_retrieval(plan, base_docs).sufficient:
+        ranked = tools.rerank(plan.query, deduped, max(tools.candidate_limit, tools.top_k * 3))
+        resolved = [doc for doc in ranked if doc.get("video_id") in set(resolved_videos)]
+        state.docs = diversify_by_video(
+            resolved + ranked,
+            limit=tools.top_k,
+            max_per_video=tools.top_k,
+            min_videos=min(tools.top_k, len(resolved_videos)),
+        )
+    else:
+        state.docs = base_docs
     state.trace.append(
         f"route=entity guests={plan.guests} resolved_episodes={len(resolved_videos)} "
         f"candidates={len(deduped)}"

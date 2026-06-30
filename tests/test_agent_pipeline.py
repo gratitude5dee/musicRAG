@@ -125,6 +125,47 @@ def test_entity_route_recovers_episode_absent_from_chunk_search():
     assert state.grade.sufficient
 
 
+def test_entity_route_keeps_graph_episode_when_rerank_prefers_blind_hits():
+    vocab = Vocabulary(guests={"adam d’angelo": "Adam D’Angelo"})
+    db = FakeDB(
+        entities=[
+            {
+                "type": "guest",
+                "slug": "adam-d-angelo",
+                "episode_ids": ["RIGHT"],
+            }
+        ],
+        episodes=[
+            {
+                "video_id": "RIGHT",
+                "channel": "Rick Rubin - Tetragrammaton",
+                "title": "Adam D’Angelo",
+                "guests": ["Adam D’Angelo"],
+            }
+        ],
+        chunks=[
+            {
+                "chunk_uid": "RIGHT:0",
+                "video_id": "RIGHT",
+                "chunk_index": 0,
+                "title": "Adam D’Angelo",
+                "guests": ["Adam D’Angelo"],
+                "rel": 0.1,
+            }
+        ],
+    )
+    blind_hits = [
+        {"chunk_uid": f"WRONG:{i}", "video_id": "WRONG", "title": "Wrong", "guests": [], "rel": 1 - i * 0.01}
+        for i in range(6)
+    ]
+    tools = make_tools(db, blind_hits, vocab=vocab, top_k=4)
+    state = run_agent("What does Adam D'Angelo discuss with Rick Rubin?", tools)
+
+    assert state.plan.intent is Intent.ENTITY_LOOKUP
+    assert state.grade.sufficient
+    assert state.docs[0]["video_id"] == "RIGHT"
+
+
 def test_thematic_route_happy_path():
     vocab = Vocabulary(topics={"a&r": "a&r"})
     docs = [
