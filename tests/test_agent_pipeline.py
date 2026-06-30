@@ -1,7 +1,7 @@
 import re
 
 from musicrag.agent.intent import Intent, Vocabulary
-from musicrag.agent.pipeline import AgentTools, best_per_video, run_agent
+from musicrag.agent.pipeline import AgentTools, best_per_video, diversify_by_video, run_agent
 from musicrag.query.rerank import fuse_and_aggregate
 
 
@@ -139,6 +139,23 @@ def test_thematic_route_happy_path():
     assert state.grade.sufficient
 
 
+def test_thematic_route_diversifies_clustered_episode_hits():
+    vocab = Vocabulary(topics={"a&r": "a&r"})
+    docs = [
+        {"chunk_uid": "A:0", "video_id": "A", "title": "Ep A", "guests": [], "rel": 1.0},
+        {"chunk_uid": "A:1", "video_id": "A", "title": "Ep A", "guests": [], "rel": 0.99},
+        {"chunk_uid": "A:2", "video_id": "A", "title": "Ep A", "guests": [], "rel": 0.98},
+        {"chunk_uid": "B:0", "video_id": "B", "title": "Ep B", "guests": [], "rel": 0.9},
+        {"chunk_uid": "C:0", "video_id": "C", "title": "Ep C", "guests": [], "rel": 0.8},
+        {"chunk_uid": "D:0", "video_id": "D", "title": "Ep D", "guests": [], "rel": 0.7},
+    ]
+    tools = make_tools(FakeDB(), docs, vocab=vocab, top_k=4)
+    state = run_agent("How do A&R spot promising artists?", tools)
+
+    assert state.plan.intent is Intent.THEMATIC
+    assert [doc["video_id"] for doc in state.docs] == ["A", "B", "C", "D"]
+
+
 def test_insufficient_entity_lookup_triggers_rewrite_to_thematic():
     # Guest is in the vocabulary but the graph has no episode for them and the
     # blind search returns unrelated docs -> grade fails -> broaden to thematic.
@@ -176,3 +193,14 @@ def test_best_per_video_dedupes_preserving_order():
     ]
     out = best_per_video(docs)
     assert [d["video_id"] for d in out] == ["A", "B"]
+
+
+def test_diversify_by_video_backfills_after_episode_coverage():
+    docs = [
+        {"video_id": "A", "chunk_uid": "A:0"},
+        {"video_id": "A", "chunk_uid": "A:1"},
+        {"video_id": "B", "chunk_uid": "B:0"},
+        {"video_id": "C", "chunk_uid": "C:0"},
+    ]
+    out = diversify_by_video(docs, limit=4, max_per_video=2, min_videos=3)
+    assert [d["video_id"] for d in out] == ["A", "B", "C", "A"]

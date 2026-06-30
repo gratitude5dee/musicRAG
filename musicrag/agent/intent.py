@@ -94,6 +94,22 @@ _KNOWN_ITEM_PATTERNS = (
     r"\bsays?\b",
     r"\btalk(s|ed)? about\b",
 )
+_GENERIC_INDUSTRY_ROLE_TOPICS = {
+    "a&r",
+    "a & r",
+    "artist",
+    "artists",
+    "manager",
+    "managers",
+    "producer",
+    "producers",
+    "songwriter",
+    "songwriters",
+    "engineer",
+    "engineers",
+    "publisher",
+    "publishers",
+}
 
 
 # Normalize "smart" punctuation so a query's straight apostrophe matches a graph
@@ -148,9 +164,15 @@ def classify_intent(
     vocab = vocab or Vocabulary()
     text = f" {query.lower()} "
 
-    guests = _match_vocab(text, vocab.guests)
-    channels = _match_vocab(text, vocab.channels)
     topics = _match_vocab(text, vocab.topics)
+    topic_names = {_canon(topic) for topic in topics}
+    guests = [
+        guest
+        for guest in _match_vocab(text, vocab.guests)
+        if _canon(guest) not in topic_names
+        and _canon(guest) not in _GENERIC_INDUSTRY_ROLE_TOPICS
+    ]
+    channels = _match_vocab(text, vocab.channels)
 
     is_compare = any(re.search(p, text) for p in _COMPARE_PATTERNS)
     is_agg = any(re.search(p, text) for p in _AGG_PATTERNS)

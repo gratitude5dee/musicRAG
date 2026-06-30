@@ -27,6 +27,17 @@ def test_conceptual_query_is_thematic():
     assert plan.guests == []
 
 
+def test_generic_role_in_guest_graph_still_routes_as_topic():
+    noisy_vocab = Vocabulary(
+        guests={"a&r": "A&R"},
+        topics={"a&r": "a&r"},
+    )
+    plan = classify_intent("How do A&R people spot promising artists?", noisy_vocab)
+    assert plan.intent is Intent.THEMATIC
+    assert plan.guests == []
+    assert plan.topics == ["a&r"]
+
+
 def test_two_entities_with_compare_cue_is_comparative():
     plan = classify_intent("How do Jimmy Iovine and Boi-1da differ on branding?", VOCAB)
     assert plan.intent is Intent.COMPARATIVE

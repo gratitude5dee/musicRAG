@@ -63,8 +63,19 @@ SOURCE_PROJECTION = {
     "chunk_index": 1,
 }
 
+DEFAULT_LIMIT = 80
+MIN_NUM_CANDIDATES = 800
+MAX_NUM_CANDIDATES = 10000
 
-def vector_search(query_vector: list[float], filters: SearchFilters, limit: int = 40, num_candidates: int = 200) -> list[dict]:
+
+def vector_search(
+    query_vector: list[float],
+    filters: SearchFilters,
+    limit: int = DEFAULT_LIMIT,
+    num_candidates: int | None = None,
+) -> list[dict]:
+    if num_candidates is None:
+        num_candidates = min(MAX_NUM_CANDIDATES, max(MIN_NUM_CANDIDATES, limit * 20))
     stage: dict[str, Any] = {
         "index": "vector_index",
         "path": "embedding",
@@ -82,7 +93,7 @@ def vector_search(query_vector: list[float], filters: SearchFilters, limit: int 
     return list(get_db().chunks.aggregate(pipeline))
 
 
-def full_text_search(query: str, filters: SearchFilters, limit: int = 40) -> list[dict]:
+def full_text_search(query: str, filters: SearchFilters, limit: int = DEFAULT_LIMIT) -> list[dict]:
     compound: dict[str, Any] = {
         "must": [{"text": {"query": query, "path": ["text", "title", "guests", "topics"]}}]
     }
@@ -139,7 +150,12 @@ def widen_with_neighbors(results: list[dict], max_neighbors: int = 1) -> list[di
     return sorted(by_key.values(), key=lambda item: item.get("rrf_score", 0), reverse=True)
 
 
-def retrieve(query: str, filters: dict[str, Any] | None = None, limit: int = 40, widen: bool = False) -> list[dict]:
+def retrieve(
+    query: str,
+    filters: dict[str, Any] | None = None,
+    limit: int = DEFAULT_LIMIT,
+    widen: bool = False,
+) -> list[dict]:
     parsed_filters = SearchFilters.from_mapping(filters)
     query_vector = QueryEmbedder().embed_query(query)
     vec = vector_search(query_vector, parsed_filters, limit=limit)

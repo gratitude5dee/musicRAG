@@ -28,7 +28,7 @@ class AgentTools:
     llm_router: Optional[Callable[[str], dict[str, Any]]] = None
     max_rewrites: int = 1
     top_k: int = 8
-    candidate_limit: int = 40
+    candidate_limit: int = 80
 
 
 @dataclass
@@ -69,6 +69,51 @@ def best_per_video(docs: list[dict[str, Any]]) -> list[dict[str, Any]]:
         seen.add(vid)
         out.append(doc)
     return out
+
+
+def diversify_by_video(
+    docs: list[dict[str, Any]],
+    *,
+    limit: int,
+    max_per_video: int = 2,
+    min_videos: int | None = None,
+) -> list[dict[str, Any]]:
+    """Prefer corpus-wide evidence before adjacent chunks from the same episode."""
+    min_videos = min(limit, min_videos or max(1, (limit + 1) // 2))
+    selected: list[dict[str, Any]] = []
+    seen_chunks: set[Any] = set()
+    video_counts: dict[Any, int] = {}
+
+    def chunk_key(doc: dict[str, Any]) -> Any:
+        return doc.get("chunk_uid") or (doc.get("video_id"), doc.get("chunk_index"))
+
+    def add(doc: dict[str, Any], cap: float) -> bool:
+        if len(selected) >= limit:
+            return False
+        key = chunk_key(doc)
+        if key in seen_chunks:
+            return False
+        video_id = doc.get("video_id") or key
+        if video_counts.get(video_id, 0) >= cap:
+            return False
+        selected.append(doc)
+        seen_chunks.add(key)
+        video_counts[video_id] = video_counts.get(video_id, 0) + 1
+        return True
+
+    for doc in docs:
+        if len(video_counts) >= min_videos or len(selected) >= limit:
+            break
+        add(doc, 1)
+    for doc in docs:
+        if len(selected) >= limit:
+            break
+        add(doc, max_per_video)
+    for doc in docs:
+        if len(selected) >= limit:
+            break
+        add(doc, float("inf"))
+    return selected
 
 
 # --- nodes -----------------------------------------------------------------------
@@ -116,8 +161,17 @@ def _route_thematic(state: AgentState, tools: AgentTools) -> None:
     plan = state.plan
     assert plan is not None
     docs = tools.retrieve(plan.query, state.filters, tools.candidate_limit)
-    state.docs = tools.rerank(plan.query, docs, tools.top_k)
-    state.trace.append(f"route=thematic filters={state.filters} candidates={len(docs)}")
+    ranked = tools.rerank(plan.query, docs, max(tools.candidate_limit, tools.top_k * 3, 24))
+    state.docs = diversify_by_video(
+        ranked,
+        limit=tools.top_k,
+        max_per_video=1,
+        min_videos=tools.top_k,
+    )
+    state.trace.append(
+        f"route=thematic filters={state.filters} candidates={len(docs)} "
+        f"diversified={len({doc.get('video_id') for doc in state.docs})}"
+    )
 
 
 def _route_comparative(state: AgentState, tools: AgentTools) -> None:
