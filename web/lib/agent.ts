@@ -2,7 +2,8 @@ import type { Db } from 'mongodb'
 import { getDb } from './mongodb'
 import { retrieve } from './retrieval'
 import { rerankCandidates } from './voyage'
-import type { Filters } from './types'
+import { appendTrace, createAgentSession, estimateTokenCount, type AgentSessionState } from './rag-harness'
+import type { AgentTraceEvent, Filters } from './types'
 
 // TypeScript port of musicrag.agent (intent routing + context-graph tools +
 // CRAG grade + episode-aware rerank). Mirrors the Python pipeline that scored
@@ -34,6 +35,9 @@ const CANDIDATE_LIMIT = 40
 const RERANK_WEIGHT = 0.7
 const RRF_WEIGHT = 0.3
 const EPISODE_DAMP = 0.5
+const MAX_RETRIEVED_TOKENS = 8000
+const EXPAND_SEEDS = 4
+const EXPAND_WINDOW = 1
 
 const COMPARE = [/\bvs\.?\b/, /\bversus\b/, /\bcompared?\b/, /\bdifference between\b/, /\bdiffer\b/, /\bcontrast\b/]
 const AGG = [
@@ -213,6 +217,90 @@ function dedupe(docs: Doc[]): Doc[] {
   return out
 }
 
+function docKey(doc: Doc) {
+  return doc.chunk_uid ?? `${doc.video_id}:${doc.chunk_index}`
+}
+
+function recordDocs(state: AgentSessionState, docs: Doc[], label: string) {
+  let addedTokens = 0
+  for (const doc of docs) {
+    const key = docKey(doc)
+    if (key) state.retrievedChunkIds.add(String(key))
+    addedTokens += estimateTokenCount(String(doc.text ?? ''))
+  }
+  state.retrievedTokenCount += addedTokens
+  appendTrace(state, {
+    step: 'search_transcripts',
+    label,
+    count: docs.length,
+    token_count: state.retrievedTokenCount
+  })
+}
+
+async function expandContext(db: Db, docs: Doc[], state: AgentSessionState): Promise<Doc[]> {
+  if (!docs.length) return docs
+  if (state.retrievedTokenCount >= MAX_RETRIEVED_TOKENS) {
+    appendTrace(state, {
+      step: 'expand_context',
+      label: 'skipped: context budget reached',
+      token_count: state.retrievedTokenCount
+    })
+    return docs
+  }
+
+  const expanded: Doc[] = [...docs]
+  const seen = new Set(docs.map(docKey).map(String))
+  let remaining = MAX_RETRIEVED_TOKENS - state.retrievedTokenCount
+  let added = 0
+
+  for (const seed of docs.slice(0, EXPAND_SEEDS)) {
+    const videoId = typeof seed.video_id === 'string' ? seed.video_id : null
+    const chunkIndex = typeof seed.chunk_index === 'number' ? seed.chunk_index : null
+    if (!videoId || chunkIndex === null || remaining <= 0) continue
+    const neighbors = await db
+      .collection('chunks')
+      .find(
+        {
+          video_id: videoId,
+          chunk_index: {
+            $gte: Math.max(0, chunkIndex - EXPAND_WINDOW),
+            $lte: chunkIndex + EXPAND_WINDOW
+          }
+        },
+        { projection: CHUNK_PROJ }
+      )
+      .sort({ chunk_index: 1 })
+      .toArray()
+
+    for (const neighbor of neighbors) {
+      const key = String(docKey(neighbor))
+      if (seen.has(key)) continue
+      const tokens = estimateTokenCount(String(neighbor.text ?? ''))
+      if (tokens > remaining) continue
+      seen.add(key)
+      remaining -= tokens
+      added += 1
+      state.retrievedChunkIds.add(key)
+      expanded.push({
+        ...neighbor,
+        rerank_score: Number(seed.rerank_score ?? 0) * 0.92,
+        rrf_score: Number(seed.rrf_score ?? 0) * 0.92,
+        expanded_from: docKey(seed)
+      })
+    }
+  }
+
+  state.retrievedTokenCount = MAX_RETRIEVED_TOKENS - remaining
+  appendTrace(state, {
+    step: 'expand_context',
+    label: added ? `expanded ${added} neighboring chunks` : 'no neighboring chunks added',
+    count: added,
+    token_count: state.retrievedTokenCount
+  })
+
+  return fuseAndAggregate(dedupe(expanded)).slice(0, TOP_K + 2)
+}
+
 function bestPerVideo(docs: Doc[]): Doc[] {
   const seen = new Set<unknown>()
   const out: Doc[] = []
@@ -283,13 +371,23 @@ async function routeAggregative(query: string, filters?: Filters): Promise<Doc[]
   return bestPerVideo(fuseAndAggregate(scored)).slice(0, TOP_K)
 }
 
-export type AgentResult = { plan: QueryPlan; docs: Doc[]; trace: string[] }
+export type AgentResult = {
+  plan: QueryPlan
+  docs: Doc[]
+  trace: AgentTraceEvent[]
+  session: AgentSessionState
+}
 
 export async function runAgent(question: string, filters?: Filters): Promise<AgentResult> {
   const db = await getDb()
+  const session = createAgentSession(question)
   const vocab = await loadVocabulary(db)
   let plan = classifyIntent(question, vocab)
-  const trace = [`classify -> ${plan.intent} (${plan.rationale})`]
+  appendTrace(session, {
+    step: 'classify',
+    label: plan.intent,
+    detail: plan.rationale
+  })
 
   async function route(p: QueryPlan): Promise<Doc[]> {
     if (p.intent === 'entity_lookup') return routeEntity(db, p, filters)
@@ -299,12 +397,30 @@ export async function runAgent(question: string, filters?: Filters): Promise<Age
   }
 
   let docs = await route(plan)
+  recordDocs(session, docs, `${plan.intent} route`)
   if (!sufficient(plan, docs)) {
-    trace.push('grade -> insufficient; broaden to thematic')
+    appendTrace(session, {
+      step: 'grade_context',
+      label: 'insufficient',
+      detail: 'broadened to thematic retrieval',
+      count: docs.length
+    })
     plan = { ...plan, intent: 'thematic', guests: [], subqueries: [], rationale: 'rewrite: broaden' }
     docs = await route(plan)
+    recordDocs(session, docs, 'thematic fallback route')
   } else {
-    trace.push('grade -> sufficient')
+    appendTrace(session, {
+      step: 'grade_context',
+      label: 'sufficient',
+      count: docs.length
+    })
   }
-  return { plan, docs, trace }
+  docs = await expandContext(db, docs, session)
+  appendTrace(session, {
+    step: 'synthesize',
+    label: 'ready for grounded answer',
+    count: docs.length,
+    token_count: session.retrievedTokenCount
+  })
+  return { plan, docs, trace: session.trace, session }
 }

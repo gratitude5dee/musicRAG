@@ -98,6 +98,7 @@ function rrf(vector: Document[], text: Document[], filters?: Filters) {
 export function toSource(doc: Document): Source {
   const text = String(doc.text ?? '')
   return {
+    chunk_uid: typeof doc.chunk_uid === 'string' ? doc.chunk_uid : undefined,
     title: String(doc.title ?? ''),
     channel: String(doc.channel ?? ''),
     guests: Array.isArray(doc.guests) ? doc.guests.map(String) : [],
@@ -106,7 +107,8 @@ export function toSource(doc: Document): Source {
     end_sec: typeof doc.end_sec === 'number' ? doc.end_sec : null,
     deep_link: typeof doc.deep_link === 'string' ? doc.deep_link : null,
     snippet: text.length > 520 ? `${text.slice(0, 517).trim()}...` : text,
-    score: Number(doc.rerank_score ?? doc.rrf_score ?? doc.score ?? 0)
+    score: Number(doc.rerank_score ?? doc.rrf_score ?? doc.score ?? 0),
+    chunk_index: typeof doc.chunk_index === 'number' ? doc.chunk_index : null
   }
 }
 
@@ -120,4 +122,3 @@ export async function retrieve(query: string, filters?: Filters) {
   ])
   return rrf(vector, text, filters).slice(0, 40)
 }
-

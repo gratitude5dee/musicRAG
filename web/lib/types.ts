@@ -1,4 +1,6 @@
 export type Source = {
+  id?: string
+  chunk_uid?: string
   title?: string
   channel?: string
   guests?: string[]
@@ -8,6 +10,7 @@ export type Source = {
   deep_link?: string | null
   snippet?: string
   score?: number
+  chunk_index?: number | null
 }
 
 export type Filters = {
@@ -24,3 +27,10 @@ export type Facets = {
   topics: { name: string; slug: string; episode_count: number }[]
 }
 
+export type AgentTraceEvent = {
+  step: 'classify' | 'search_transcripts' | 'expand_context' | 'grade_context' | 'synthesize' | 'citation_validation'
+  label: string
+  detail?: string
+  count?: number
+  token_count?: number
+}
