@@ -18,6 +18,10 @@ const sourceProjection = {
   chunk_index: 1
 }
 
+const DEFAULT_LIMIT = 80
+const MIN_NUM_CANDIDATES = 800
+const MAX_NUM_CANDIDATES = 10000
+
 function compactFilters(filters?: Filters) {
   const clauses: Document[] = []
   if (filters?.channel) clauses.push({ channel: filters.channel })
@@ -34,13 +38,14 @@ function compactFilters(filters?: Filters) {
   return { $and: clauses }
 }
 
-async function vectorSearch(collection: Collection, queryVector: number[], filters?: Filters) {
+async function vectorSearch(collection: Collection, queryVector: number[], filters?: Filters, limit = DEFAULT_LIMIT) {
+  const numCandidates = Math.min(MAX_NUM_CANDIDATES, Math.max(MIN_NUM_CANDIDATES, limit * 20))
   const stage: Document = {
     index: 'vector_index',
     path: 'embedding',
     queryVector,
-    numCandidates: 200,
-    limit: 40
+    numCandidates,
+    limit
   }
   const vectorFilter = compactFilters(filters)
   if (vectorFilter) stage.filter = vectorFilter
@@ -52,7 +57,7 @@ async function vectorSearch(collection: Collection, queryVector: number[], filte
     .toArray()
 }
 
-async function fullTextSearch(collection: Collection, query: string, filters?: Filters) {
+async function fullTextSearch(collection: Collection, query: string, filters?: Filters, limit = DEFAULT_LIMIT) {
   const pipeline: Document[] = [
     {
       $search: {
@@ -64,7 +69,7 @@ async function fullTextSearch(collection: Collection, query: string, filters?: F
   const match = compactFilters(filters)
   if (match) pipeline.push({ $match: match })
   pipeline.push(
-    { $limit: 40 },
+    { $limit: limit },
     { $project: { ...sourceProjection, score: { $meta: 'searchScore' } } }
   )
   return collection.aggregate(pipeline).toArray()
@@ -112,13 +117,13 @@ export function toSource(doc: Document): Source {
   }
 }
 
-export async function retrieve(query: string, filters?: Filters) {
+export async function retrieve(query: string, filters?: Filters, limit = DEFAULT_LIMIT) {
   const db = await getDb()
   const collection = db.collection('chunks')
   const queryVector = await embedQuery(query)
   const [vector, text] = await Promise.all([
-    vectorSearch(collection, queryVector, filters),
-    fullTextSearch(collection, query, filters)
+    vectorSearch(collection, queryVector, filters, limit),
+    fullTextSearch(collection, query, filters, limit)
   ])
-  return rrf(vector, text, filters).slice(0, 40)
+  return rrf(vector, text, filters).slice(0, limit)
 }

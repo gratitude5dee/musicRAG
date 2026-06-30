@@ -3,6 +3,7 @@ import { getDb } from './mongodb'
 import { retrieve } from './retrieval'
 import { rerankCandidates } from './voyage'
 import { appendTrace, createAgentSession, estimateTokenCount, type AgentSessionState } from './rag-harness'
+import { diversifyByEpisode, uniqueEpisodeCount } from './ranking'
 import type { AgentTraceEvent, Filters } from './types'
 
 // TypeScript port of musicrag.agent (intent routing + context-graph tools +
@@ -31,7 +32,8 @@ export type QueryPlan = {
 type Doc = Record<string, unknown>
 
 const TOP_K = 8
-const CANDIDATE_LIMIT = 40
+const SOURCE_LIMIT = 10
+const CANDIDATE_LIMIT = 80
 const RERANK_WEIGHT = 0.7
 const RRF_WEIGHT = 0.3
 const EPISODE_DAMP = 0.5
@@ -298,7 +300,18 @@ async function expandContext(db: Db, docs: Doc[], state: AgentSessionState): Pro
     token_count: state.retrievedTokenCount
   })
 
-  return fuseAndAggregate(dedupe(expanded)).slice(0, TOP_K + 2)
+  return fuseAndAggregate(dedupe(expanded)).slice(0, SOURCE_LIMIT * 2)
+}
+
+function diversifyForIntent(intent: Intent, docs: Doc[]) {
+  const ranked = dedupe(docs)
+  if (intent === 'entity_lookup') {
+    return diversifyByEpisode(ranked, SOURCE_LIMIT, { maxPerEpisode: 4, minEpisodes: 2 })
+  }
+  if (intent === 'comparative') {
+    return diversifyByEpisode(ranked, SOURCE_LIMIT, { maxPerEpisode: 2, minEpisodes: 4 })
+  }
+  return diversifyByEpisode(ranked, SOURCE_LIMIT, { maxPerEpisode: 2, minEpisodes: 5 })
 }
 
 function bestPerVideo(docs: Doc[]): Doc[] {
@@ -342,15 +355,18 @@ async function routeEntity(db: Db, plan: QueryPlan, filters?: Filters): Promise<
   }
   const candidates: Doc[] = []
   for (const vid of videoIds.slice(0, 5)) candidates.push(...(await episodeChunks(db, vid)))
-  candidates.push(...(await retrieve(plan.query, filters)))
+  candidates.push(...(await retrieve(plan.query, filters, CANDIDATE_LIMIT)))
   const scored = await rerankCandidates(plan.query, dedupe(candidates))
   return fuseAndAggregate(scored).slice(0, TOP_K)
 }
 
 async function routeThematic(query: string, filters?: Filters): Promise<Doc[]> {
-  const fused = await retrieve(query, filters)
+  const fused = await retrieve(query, filters, CANDIDATE_LIMIT)
   const scored = await rerankCandidates(query, fused)
-  return fuseAndAggregate(scored).slice(0, TOP_K)
+  return diversifyByEpisode(fuseAndAggregate(scored, false), TOP_K, {
+    maxPerEpisode: 1,
+    minEpisodes: TOP_K
+  })
 }
 
 async function routeComparative(plan: QueryPlan, filters?: Filters): Promise<Doc[]> {
@@ -358,7 +374,7 @@ async function routeComparative(plan: QueryPlan, filters?: Filters): Promise<Doc
   const subs = plan.subqueries.length ? plan.subqueries : [plan.query]
   const perEntity = Math.max(2, Math.floor(TOP_K / subs.length))
   for (const sub of subs) {
-    const fused = await retrieve(sub, filters)
+    const fused = await retrieve(sub, filters, Math.max(40, Math.floor(CANDIDATE_LIMIT / 2)))
     const scored = await rerankCandidates(sub, fused)
     merged.push(...fuseAndAggregate(scored).slice(0, perEntity))
   }
@@ -366,9 +382,9 @@ async function routeComparative(plan: QueryPlan, filters?: Filters): Promise<Doc
 }
 
 async function routeAggregative(query: string, filters?: Filters): Promise<Doc[]> {
-  const fused = await retrieve(query, filters)
+  const fused = await retrieve(query, filters, Math.max(CANDIDATE_LIMIT, 100))
   const scored = await rerankCandidates(query, fused)
-  return bestPerVideo(fuseAndAggregate(scored)).slice(0, TOP_K)
+  return bestPerVideo(fuseAndAggregate(scored, false)).slice(0, TOP_K)
 }
 
 export type AgentResult = {
@@ -415,7 +431,12 @@ export async function runAgent(question: string, filters?: Filters): Promise<Age
       count: docs.length
     })
   }
-  docs = await expandContext(db, docs, session)
+  docs = diversifyForIntent(plan.intent, await expandContext(db, docs, session))
+  appendTrace(session, {
+    step: 'expand_context',
+    label: `diversified to ${uniqueEpisodeCount(docs)} episodes`,
+    count: docs.length
+  })
   appendTrace(session, {
     step: 'synthesize',
     label: 'ready for grounded answer',

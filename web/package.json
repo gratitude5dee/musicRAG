@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test:unit": "node --test --experimental-strip-types tests/rag-harness.test.ts"
+    "test:unit": "node --test --experimental-strip-types tests/*.test.ts"
   },
   "dependencies": {
     "ai": "^7.0.4",
